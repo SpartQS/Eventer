@@ -3,28 +3,25 @@ import { StartPage } from '@/pages/StartPage';
 import { AboutPage } from '@/pages/AboutPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { MainLayout } from '@/components/layouts/MainLayout';
 
 export const App = () => {
   return (
     <BrowserRouter>
-      <main style={{ padding: '1rem' }}>
-        <Routes>
-          {/* Главная страница */}
-          <Route path="/" element={<StartPage />} />
+      <Routes>
+        {/* Главная страница без сайдбара */}
+        <Route path="/" element={<StartPage />} />
 
-          {/* Профиль */}
+        {/* Страницы с сайдбаром */}
+        <Route element={<MainLayout />}>
           <Route path="/profile" element={<ProfilePage />} />
-
-          {/* Страница "О нас" */}
           <Route path="/about" element={<AboutPage />} />
-
-          {/* Страница контактов */}
           <Route path="/contact" element={<ContactPage />} />
+        </Route>
 
-          {/* Редирект на главную страницу, если маршрут не найден */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </main>
+        {/* Редирект на главную страницу, если маршрут не найден */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </BrowserRouter>
   );
 };
