@@ -3,12 +3,12 @@ import logo from '../assets/logo.png';
 import {
   GalleryVerticalEnd,
   LifeBuoy,
-  File ,
+  File,
   GraduationCap,
   Send,
   UserRound
-
 } from "lucide-react"
+import { Link } from "react-router-dom";
 
 import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
@@ -45,23 +45,23 @@ const data = {
   projects: [
     {
       name: "Профиль",
-      url: "#",
+      url: "/profile",
       icon: UserRound,
     },
     {
       name: "Все мероприятия",
-      url: "#",
+      url: "/events",
       icon: GalleryVerticalEnd,
     },
     {
       name: "Мои мероприятия",
-      url: "#",
+      url: "/my-events",
       icon: GraduationCap,
     },
     {
       name: "Сертификаты",
-      url: "#",
-      icon: File ,
+      url: "/certificates",
+      icon: File,
     },
   ],
 }
@@ -73,7 +73,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link to="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground overflow-hidden">
                   <img src={logo} alt="Logo" className="size-full object-cover" />
                 </div>
@@ -81,7 +81,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="truncate font-semibold">Eventer</span>
                   <span className="truncate text-xs">КИПУ</span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

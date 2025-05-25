@@ -4,6 +4,7 @@ import { AboutPage } from '@/pages/AboutPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { MainLayout } from '@/components/layouts/MainLayout';
+import EventsPage from '@/pages/EventsPage';
 
 export const App = () => {
   return (
@@ -17,6 +18,7 @@ export const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/events" element={<EventsPage />} />
         </Route>
 
         {/* Редирект на главную страницу, если маршрут не найден */}

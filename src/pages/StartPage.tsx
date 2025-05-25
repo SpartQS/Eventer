@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import logo from '../assets/logo.png';
 import '../styles/StartPage.css';
+import { Link } from "react-router-dom";
 
 
 export function StartPage() {
@@ -28,6 +29,15 @@ export function StartPage() {
                         >
                             Авторизация
                         </Button>
+                    </div>
+
+                    <div className="text-center">
+                        <Link
+                            to="/register"
+                            className="text-white/80 hover:text-white text-lg transition-colors duration-200 underline hover:no-underline"
+                        >
+                            Регистрация
+                        </Link>
                     </div>
                 </div>
             </div>
