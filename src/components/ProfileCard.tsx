@@ -1,9 +1,11 @@
 import type React from "react"
-import { Mail, Edit2, Gamepad2, Laptop, Cpu } from "lucide-react"
+import { Mail, Edit2, Gamepad2, Laptop, Cpu, Copy } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 
 interface ProfileStat {
     icon: React.ReactNode
@@ -19,78 +21,105 @@ interface ProfileInfo {
 export function ProfileCard() {
     const stats: ProfileStat[] = [
         {
-            icon: <Laptop className="size-5" />,
+            icon: <Laptop className="size-7" />,
             label: "Хакатон",
             value: 15,
         },
         {
-            icon: <Gamepad2 className="size-5" />,
+            icon: <Gamepad2 className="size-7" />,
             label: "Киберспорт",
             value: 4,
         },
         {
-            icon: <Cpu className="size-5" />,
+            icon: <Cpu className="size-7" />,
             label: "Алгоритмы",
             value: 8,
         },
     ]
 
     const info: ProfileInfo[] = [
-        { label: "Статус", value: "Участник" },
+        { label: "Команда", value: "Horizon" },
+        { label: "Роль", value: "Капитан" },
+        { label: "Статус", value: "Активен" },
         { label: "Пол", value: "мужской" },
         { label: "Город", value: "Бахчисарай" },
         { label: "Возраст", value: "25" },
     ]
 
+    const handleCopyId = () => {
+        navigator.clipboard.writeText("U1234567")
+        toast("ID скопирован", {
+            description: "UntiID:U1234567 скопирован в буфер обмена",
+            action: {
+                label: "Скопировать",
+                onClick: () => {
+                    navigator.clipboard.writeText("U1234567")
+                    toast("ID скопирован повторно")
+                },
+            },
+        })
+    }
+
     return (
-        <Card className="w-full max-w-md bg-white text-gray-900 border-gray-200 shadow-sm">
+        <Card className="w-[500px] bg-card text-card-foreground border-border shadow-sm">
             <CardHeader className="flex flex-row items-start gap-4 p-6">
-                <Avatar className="h-24 w-24 rounded-full border-2 border-gray-200">
+                <Avatar className="h-24 w-24 rounded-full border-2 border-border shrink-0">
                     <AvatarImage
                         src="https://github.com/shadcn.png"
                         alt="Profile picture"
                     />
-                    <AvatarFallback className="bg-gray-100 text-gray-700">ЕО</AvatarFallback>
+                    <AvatarFallback className="bg-muted text-muted-foreground">ЕО</AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col flex-1">
+                <div className="flex flex-col flex-1 min-w-0">
                     <div className="flex justify-between items-start">
-                        <div>
-                            <h2 className="text-2xl font-bold">Евгений Онегин</h2>
-                            <div className="flex items-center text-gray-500 mt-1">
-                                <Mail className="h-4 w-4 mr-1" />
-                                <span className="text-sm">evgeniy@gmail.com</span>
-                            </div>
+                        <div className="min-w-0">
+                            <h2 className="text-2xl font-semibold text-foreground mt-4">Данил Громов</h2>
+                            <p className="text-lg text-muted-foreground mt-1">danil.gromov@gmail.com</p>
+                            <p className="text-lg text-muted-foreground mt-1">+7 (978) 123-52-52</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Edit2 className="h-5 w-5 text-gray-500" />
-                            <Badge variant="outline" className="text-xs font-normal border-gray-300">
-                                UntiID:U1234567
-                            </Badge>
+                        <div className="flex items-center gap-2 shrink-0">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 px-2 hover:bg-accent hover:text-accent-foreground"
+                                onClick={handleCopyId}
+                            >
+                                <Badge variant="outline" className="text-xs font-normal border-border whitespace-nowrap flex items-center gap-1">
+                                    UntiID:U1234567
+                                    <Copy className="h-3 w-3" />
+                                </Badge>
+                            </Button>
                         </div>
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="p-0">
                 <div className="px-6 py-4">
-                    <h3 className="text-lg font-medium mb-4">Участвовал</h3>
+                    <h3 className="text-xl font-medium mb-4 text-foreground">Участвовал</h3>
                     <div className="flex justify-between">
                         {stats.map((stat, index) => (
                             <div key={index} className="flex flex-col items-center">
-                                <div className="p-3 rounded-md bg-gray-100 mb-2">{stat.icon}</div>
-                                <span className="text-sm text-gray-500">{stat.label}</span>
-                                <span className="font-bold">{stat.value}</span>
+                                <div className="mb-2 text-muted-foreground">{stat.icon}</div>
+                                <span className="text-base text-muted-foreground truncate">{stat.label}</span>
+                                <span className="text-lg font-bold text-foreground">{stat.value}</span>
                             </div>
                         ))}
                     </div>
                 </div>
-                <Separator className="bg-gray-200 my-4" />
+                <Separator className="bg-border my-4" />
                 <div className="px-6 pb-6">
-                    <h3 className="text-lg font-medium mb-4">Информация</h3>
-                    <div className="space-y-2">
+                    <h3 className="text-xl font-medium mb-4 text-foreground">Информация</h3>
+                    <div className="space-y-3">
                         {info.map((item, index) => (
-                            <div key={index} className="flex">
-                                <span className="text-gray-500 w-24">{item.label} :</span>
-                                <span className="ml-2">{item.value}</span>
+                            <div key={index} className="flex items-center">
+                                <span className="text-base text-muted-foreground w-24 shrink-0">{item.label}:</span>
+                                {item.label === "Статус" ? (
+                                    <Badge variant="secondary" className="text-base bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 hover:bg-green-100 dark:hover:bg-green-900">
+                                        {item.value}
+                                    </Badge>
+                                ) : (
+                                    <span className="text-base text-foreground ml-2">{item.value}</span>
+                                )}
                             </div>
                         ))}
                     </div>

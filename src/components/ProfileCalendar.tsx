@@ -7,19 +7,19 @@ export function ProfileCalendar() {
     const [date, setDate] = React.useState<Date | undefined>(new Date())
 
     return (
-        <Card className="bg-white border border-gray-200">
-            <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+        <Card className="bg-card text-card-foreground border-border h-[450px] flex-1">
+            <CardHeader>
+                <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
                     <CalendarIcon className="h-5 w-5" />
                     Календарь
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex justify-center">
+            <CardContent className="flex justify-center items-center h-[calc(100%-60px)]">
                 <Calendar
                     mode="single"
                     selected={date}
                     onSelect={setDate}
-                    className="rounded-md border shadow"
+                    className="rounded-md border border-border bg-card text-card-foreground shadow-sm"
                 />
             </CardContent>
         </Card>

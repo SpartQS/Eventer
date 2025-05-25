@@ -23,22 +23,22 @@ export function NavProjects({
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Основное</SidebarGroupLabel>
+      <SidebarGroupLabel className="text-lg font-medium">Основное</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton asChild size="lg">
               <a href={item.url}>
                 <item.icon />
-                <span>{item.name}</span>
+                <span className="text-base">{item.name}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton>
+          <SidebarMenuButton size="lg">
             <MoreHorizontal />
-            <span>Больше</span>
+            <span className="text-base">Больше</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
