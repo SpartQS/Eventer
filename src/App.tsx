@@ -5,6 +5,8 @@ import { ContactPage } from '@/pages/ContactPage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import EventsPage from '@/pages/EventsPage';
+import CertificatesPage from '@/pages/CertificatesPage';
+import MyEvents from '@/pages/MyEvents';
 
 export const App = () => {
   return (
@@ -19,6 +21,8 @@ export const App = () => {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/my-events" element={<MyEvents />} />
+          <Route path="/certificates" element={<CertificatesPage />} />
         </Route>
 
         {/* Редирект на главную страницу, если маршрут не найден */}
