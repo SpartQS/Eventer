@@ -17,12 +17,12 @@ const LAST_UPDATE_KEY = 'last_update_time'
 export function ProfileCalendar() {
   const timers: TimerConfig[] = [
     { 
-      duration: 25 * 40, 
+      duration: 40 * 40, 
       label: "Время работы",
       title: "Текущий ивент Хакатон"
     },
     { 
-      duration: 5 * 60, 
+      duration: 45 * 60, 
       label: "Время отдыха",
       title: "Текущий ивент Алгоритмы"
     }
