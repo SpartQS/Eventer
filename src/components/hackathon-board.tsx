@@ -30,6 +30,7 @@ export default function HackathonBoard() {
     const [selectedEventType, setSelectedEventType] = useState("all")
     const [onlineChecked, setOnlineChecked] = useState(false)
     const [offlineChecked, setOfflineChecked] = useState(false)
+    const [hybridChecked, setHybridChecked] = useState(false)
     const [date, setDate] = useState("")
 
     const hackathons: Hackathon[] = [
@@ -185,8 +186,8 @@ export default function HackathonBoard() {
                             <SelectContent>
                                 <SelectItem value="all">Все мероприятия</SelectItem>
                                 <SelectItem value="hackathon">Хакатон</SelectItem>
-                                <SelectItem value="contest">Конкурс</SelectItem>
-                                <SelectItem value="workshop">Воркшоп</SelectItem>
+                                <SelectItem value="contest">Алгоритмы</SelectItem>
+                                <SelectItem value="workshop">Киберспорт</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -217,6 +218,16 @@ export default function HackathonBoard() {
                                     Офлайн
                                 </Label>
                             </div>
+                            <div className="flex items-center space-x-2">
+                                <Checkbox
+                                    id="hybrid"
+                                    checked={hybridChecked}
+                                    onCheckedChange={(checked) => setHybridChecked(checked === true)}
+                                />
+                                <Label htmlFor="hybrid" className="text-sm font-normal">
+                                    Гибрид
+                                </Label>
+                            </div>
                         </div>
                     </div>
                 </CardContent>
@@ -238,7 +249,7 @@ export default function HackathonBoard() {
                                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20"></div>
                                     <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
                                         <div>
-                                            <div className="text-3xl font-bold mb-2 tracking-wider">ХАКА ТОН</div>
+                                            <div className="text-3xl font-bold mb-2 tracking-wider">ХАКАТОН</div>
                                             <div className="text-sm opacity-90">по программированию</div>
                                         </div>
                                         <div className="text-center">

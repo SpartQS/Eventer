@@ -34,7 +34,7 @@ export default function MyEvents() {
               <SelectContent>
                 <SelectItem value="all">Все мероприятия</SelectItem>
                 <SelectItem value="hackathon">Хакатоны</SelectItem>
-                <SelectItem value="conference">Конференции</SelectItem>
+                <SelectItem value="conference">Алгоритмы</SelectItem>
               </SelectContent>
             </Select>
             <Input 
