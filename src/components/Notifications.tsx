@@ -1,6 +1,17 @@
-import { Check, X, Bell } from "lucide-react"
+import { Bell, Check, X } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface NotificationItem {
     id: number
@@ -56,20 +67,57 @@ export function Notifications() {
                             </p>
                         </div>
                         <div className="flex items-center gap-2 ml-4">
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-9 w-9 hover:bg-green-100 dark:hover:bg-green-900"
-                            >
-                                <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-9 w-9 hover:bg-red-100 dark:hover:bg-red-900"
-                            >
-                                <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 hover:bg-green-100 dark:hover:bg-green-900"
+                                    >
+                                        <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Подтверждение действия</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Вы точно хотите принять заявку на вступление?
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogAction onClick={() => handleAccept(notification.id)}>
+                                            Принять
+                                        </AlertDialogAction>
+                                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-9 w-9 hover:bg-red-100 dark:hover:bg-red-900"
+                                    >
+                                        <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Подтверждение действия</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Вы точно хотите отклонить заявку на вступление?
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogAction onClick={() => handleDecline(notification.id)}>
+                                            Отклонить
+                                        </AlertDialogAction>
+                                        <AlertDialogCancel>Отмена</AlertDialogCancel>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         </div>
                     </div>
                 ))}

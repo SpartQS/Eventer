@@ -57,10 +57,28 @@ export function ProfileTimer() {
     return [timers[0].duration, timers[1].duration]
   })
 
+  // Функция сброса таймера
+  const resetTimer = (index: number) => {
+    setTimerStates((prev: number[]) => {
+      const newStates = [...prev]
+      newStates[index] = timers[index].duration
+      localStorage.setItem(TIMER_STATES_KEY, JSON.stringify(newStates))
+      localStorage.setItem(LAST_UPDATE_KEY, Date.now().toString())
+      return newStates
+    })
+  }
+
   // Функция обновления таймеров
   const updateTimers = React.useCallback(() => {
     setTimerStates((prev: number[]) => {
-      const newStates = prev.map((time: number) => Math.max(0, time - 1))
+      const newStates = prev.map((time: number, index: number) => {
+        const newTime = Math.max(0, time - 1)
+        // Если таймер достиг нуля, сбрасываем его
+        if (newTime === 0) {
+          return timers[index].duration
+        }
+        return newTime
+      })
       localStorage.setItem(TIMER_STATES_KEY, JSON.stringify(newStates))
       localStorage.setItem(LAST_UPDATE_KEY, Date.now().toString())
 
@@ -73,7 +91,7 @@ export function ProfileTimer() {
 
       return newStates
     })
-  }, [])
+  }, [timers])
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
