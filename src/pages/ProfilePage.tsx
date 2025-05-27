@@ -1,7 +1,7 @@
 import { ProfileCard } from "@/components/ProfileCard"
 import { Notifications } from "@/components/Notifications"
 import { CurrentEvents } from "@/components/CurrentEvents"
-import { ProfileCalendar } from "@/components/ProfileCalendar"
+import { ProfileTimer } from "@/components/ProfileTimer"
 
 export function ProfilePage() {
     return (
@@ -11,7 +11,7 @@ export function ProfilePage() {
                 <div className="h-full flex flex-col gap-6">
                     <div className="flex gap-6">
                         <Notifications />
-                        <ProfileCalendar />
+                        <ProfileTimer />
                     </div>
                     <CurrentEvents />
                 </div>

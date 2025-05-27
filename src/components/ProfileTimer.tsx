@@ -14,15 +14,15 @@ const TIMER_STATES_KEY = 'timer_states'
 const CURRENT_TIMER_KEY = 'current_timer_index'
 const LAST_UPDATE_KEY = 'last_update_time'
 
-export function ProfileCalendar() {
+export function ProfileTimer() {
   const timers: TimerConfig[] = [
-    { 
-      duration: 40 * 40, 
+    {
+      duration: 40 * 40,
       label: "Время работы",
       title: "Текущий ивент Хакатон"
     },
-    { 
-      duration: 45 * 60, 
+    {
+      duration: 45 * 60,
       label: "Время отдыха",
       title: "Текущий ивент Алгоритмы"
     }
@@ -30,7 +30,7 @@ export function ProfileCalendar() {
 
   const channelRef = React.useRef<BroadcastChannel | null>(null)
   const intervalRef = React.useRef<NodeJS.Timeout | null>(null)
-  
+
   const [currentTimerIndex, setCurrentTimerIndex] = React.useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem(CURRENT_TIMER_KEY)
@@ -44,11 +44,11 @@ export function ProfileCalendar() {
       // Получаем сохраненные значения таймеров и время последнего обновления
       const savedTimers = localStorage.getItem(TIMER_STATES_KEY)
       const lastUpdate = localStorage.getItem(LAST_UPDATE_KEY)
-      
+
       if (savedTimers && lastUpdate) {
         const timersData = JSON.parse(savedTimers)
         const timePassed = Math.floor((Date.now() - parseInt(lastUpdate, 10)) / 1000)
-        
+
         // Обновляем значения таймеров с учетом прошедшего времени
         return timersData.map((time: number) => Math.max(0, time - timePassed))
       }
@@ -63,14 +63,14 @@ export function ProfileCalendar() {
       const newStates = prev.map((time: number) => Math.max(0, time - 1))
       localStorage.setItem(TIMER_STATES_KEY, JSON.stringify(newStates))
       localStorage.setItem(LAST_UPDATE_KEY, Date.now().toString())
-      
+
       if (channelRef.current) {
         channelRef.current.postMessage({
           type: 'TIMER_UPDATE',
           timers: newStates
         })
       }
-      
+
       return newStates
     })
   }, [])
@@ -79,7 +79,7 @@ export function ProfileCalendar() {
     if (typeof window !== 'undefined') {
       // Инициализация BroadcastChannel
       channelRef.current = new BroadcastChannel('timer_sync')
-      
+
       // Обработка сообщений от других вкладок
       channelRef.current.onmessage = (event) => {
         if (event.data.type === 'TIMER_UPDATE') {
@@ -112,7 +112,7 @@ export function ProfileCalendar() {
         // При возвращении на страницу синхронизируем состояние
         const savedTimers = localStorage.getItem(TIMER_STATES_KEY)
         const lastUpdate = localStorage.getItem(LAST_UPDATE_KEY)
-        
+
         if (savedTimers && lastUpdate) {
           const timersData = JSON.parse(savedTimers)
           const timePassed = Math.floor((Date.now() - parseInt(lastUpdate, 10)) / 1000)

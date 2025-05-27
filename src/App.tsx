@@ -7,6 +7,7 @@ import { MainLayout } from '@/components/layouts/MainLayout';
 import EventsPage from '@/pages/EventsPage';
 import CertificatesPage from '@/pages/CertificatesPage';
 import MyEvents from '@/pages/MyEvents';
+import CreateEvent from '@/pages/CreateEvent';
 
 export const App = () => {
   return (
@@ -23,6 +24,7 @@ export const App = () => {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/my-events" element={<MyEvents />} />
           <Route path="/certificates" element={<CertificatesPage />} />
+          <Route path="/create-event" element={<CreateEvent />} />
         </Route>
 
         {/* Редирект на главную страницу, если маршрут не найден */}

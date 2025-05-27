@@ -6,7 +6,8 @@ import {
   File,
   GraduationCap,
   Send,
-  UserRound
+  UserRound,
+  PlusCircle
 } from "lucide-react"
 import { Link } from "react-router-dom";
 
@@ -57,6 +58,11 @@ const data = {
       name: "Мои мероприятия",
       url: "/my-events",
       icon: GraduationCap,
+    },
+    {
+      name: "Создать мероприятие",
+      url: "/create-event",
+      icon: PlusCircle,
     },
     {
       name: "Сертификаты",
