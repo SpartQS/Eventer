@@ -16,7 +16,7 @@ export function StartPage() {
                     <h1 className="title">КИПУ</h1>
 
                     <p className="subtitle">
-                        UniEvents — удобный сервис для<br />
+                        Eventer — удобный сервис для<br />
                         организации мероприятий в<br />
                         университете
                     </p>
