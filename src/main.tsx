@@ -5,9 +5,7 @@ import './index.css'
 import { App } from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <App />
-    </ThemeProvider>
-  </StrictMode>,
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <App />
+  </ThemeProvider>
 )
