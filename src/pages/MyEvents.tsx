@@ -9,6 +9,7 @@ import { parse, isValid } from "date-fns"
 import { ru } from "date-fns/locale"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { useNavigate } from "react-router-dom"
 
 interface Event {
   id: number
@@ -63,6 +64,7 @@ const events: Event[] = [
 ]
 
 export default function MyEvents() {
+  const navigate = useNavigate()
   const [selectedType, setSelectedType] = useState<string>("all")
   const [selectedStatus, setSelectedStatus] = useState<string>("all")
   const [date, setDate] = useState<string>("")
@@ -222,6 +224,7 @@ export default function MyEvents() {
                 <Button 
                   variant="outline" 
                   className="w-full hover:bg-accent hover:text-accent-foreground"
+                  onClick={() => navigate(`/my-events/${event.id}`)}
                 >
                   Подробнее
                 </Button>

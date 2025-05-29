@@ -9,6 +9,7 @@ import CreateEvent from '@/pages/CreateEvent';
 import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from './auth/keycloak';
 import { ProtectedRoute } from '@/auth/ProtectedRoute';
+import EventDetails from '@/pages/EventDetails';
 
 export const App = () => {
   return (
@@ -24,6 +25,7 @@ export const App = () => {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/events" element={<EventsPage />} />
               <Route path="/my-events" element={<MyEvents />} />
+              <Route path="/my-events/:id" element={<EventDetails />} />
               <Route path="/certificates" element={<CertificatesPage />} />
               <Route path="/create-event" element={<CreateEvent />} />
             </Route>
