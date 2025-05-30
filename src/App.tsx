@@ -10,34 +10,31 @@ import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from './auth/keycloak';
 import { ProtectedRoute } from '@/auth/ProtectedRoute';
 import EventDetails from '@/pages/EventDetails';
-import { AuthProvider } from '@/auth/AuthContext';
 
 export const App = () => {
   return (
     <ReactKeycloakProvider authClient={keycloak} initOptions={{ flow: 'standard', onLoad: 'check-sso', pkceMethod: 'S256', checkLoginIframe: false }}>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Открытые маршруты */}
-            <Route path="/" element={<StartPage />} />
+      <BrowserRouter>
+        <Routes>
+          {/* Открытые маршруты */}
+          <Route path="/" element={<StartPage />} />
 
-            {/* Защищенные маршруты */}
-            <Route element={<ProtectedRoute />}>
-              <Route element={<MainLayout />}>
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/events" element={<EventsPage />} />
-                <Route path="/my-events" element={<MyEvents />} />
-                <Route path="/my-events/:id" element={<EventDetails />} />
-                <Route path="/certificates" element={<CertificatesPage />} />
-                <Route path="/create-event" element={<CreateEvent />} />
-              </Route>
+          {/* Защищенные маршруты */}
+          <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/my-events" element={<MyEvents />} />
+              <Route path="/my-events/:id" element={<EventDetails />} />
+              <Route path="/certificates" element={<CertificatesPage />} />
+              <Route path="/create-event" element={<CreateEvent />} />
             </Route>
+          </Route>
 
-            {/* Редирект на главную страницу, если маршрут не найден */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
+          {/* Редирект на главную страницу, если маршрут не найден */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
     </ReactKeycloakProvider>
   );
 };

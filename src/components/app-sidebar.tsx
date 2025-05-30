@@ -66,7 +66,7 @@ const data = {
   ],
 }
 
-const AppSidebarComponent = React.memo(function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -95,6 +95,4 @@ const AppSidebarComponent = React.memo(function AppSidebar({ ...props }: React.C
       </SidebarFooter>
     </Sidebar>
   )
-});
-
-export const AppSidebar = AppSidebarComponent;
+}

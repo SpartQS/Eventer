@@ -7,15 +7,7 @@ import { useKeycloak } from "@react-keycloak/web";
 
 export function StartPage() {
     const { keycloak, initialized } = useKeycloak();
-
-    const handleLogin = () => {
-        const redirectPath = sessionStorage.getItem('redirectPath') || '/profile';
-        sessionStorage.removeItem('redirectPath'); // Очищаем сохраненный путь
-        keycloak.login({
-            redirectUri: window.location.origin + redirectPath
-        });
-    };
-
+    console.log("Keycloak initialized:", initialized);
     return (
         <div className="background">
             <div className="container">
@@ -38,7 +30,9 @@ export function StartPage() {
                             <Button
                                 size="lg"
                                 className="relative bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground border border-white/30 w-64 h-16 text-2xl font-bold transition-all duration-300 hover:scale-105"
-                                onClick={handleLogin}
+                                onClick={() => keycloak.login({
+                                    redirectUri: window.location.origin + '/profile'
+                                })}
                             >
                                 Авторизация
                             </Button>

@@ -1,18 +1,10 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from './AuthContext';
-import { useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { useKeycloak } from '@react-keycloak/web';
 
 export const ProtectedRoute = () => {
-    const { isAuthenticated, isLoading } = useAuth();
-    const location = useLocation();
+    const { keycloak, initialized } = useKeycloak();
 
-    useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            sessionStorage.setItem('redirectPath', location.pathname);
-        }
-    }, [isLoading, isAuthenticated, location]);
-
-    if (isLoading) {
+    if (!initialized) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-background/80 backdrop-blur-sm">
                 <div className="text-2xl font-semibold text-foreground animate-pulse">
@@ -22,9 +14,8 @@ export const ProtectedRoute = () => {
         );
     }
 
-    if (!isAuthenticated) {
+    if (!keycloak.authenticated) {
         return <Navigate to="/" replace />;
     }
-
     return <Outlet />;
 };
