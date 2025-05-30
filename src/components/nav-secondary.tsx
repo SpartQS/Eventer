@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-export function NavSecondary({
+const NavSecondaryComponent = React.memo(function NavSecondary({
   items,
   ...props
 }: {
@@ -37,4 +37,6 @@ export function NavSecondary({
       </SidebarGroupContent>
     </SidebarGroup>
   )
-}
+});
+
+export const NavSecondary = NavSecondaryComponent;

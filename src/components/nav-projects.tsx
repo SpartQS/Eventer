@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { MoreHorizontal, type LucideIcon } from "lucide-react"
 import {
   SidebarGroup,
@@ -10,7 +11,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavProjects({
+const NavProjectsComponent = React.memo(function NavProjects({
   projects,
 }: {
   projects: {
@@ -44,4 +45,6 @@ export function NavProjects({
       </SidebarMenu>
     </SidebarGroup>
   )
-}
+});
+
+export const NavProjects = NavProjectsComponent;
