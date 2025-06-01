@@ -1,58 +1,106 @@
-# React + TypeScript + Vite
-![0526 (1)](https://github.com/user-attachments/assets/a13bb345-0cc2-4fdd-948c-1e27be964e11)
+# 🛡️ Next.js + Keycloak Starter
 
+Этот проект — пример интеграции Keycloak с приложением на Next.js. Используется `next-auth` для упрощения работы с авторизацией и аутентификацией.
 
+## 📦 Стек технологий
 
+- [Next.js](https://nextjs.org/)
+- [NextAuth.js](https://next-auth.js.org/)
+- [Keycloak](https://www.keycloak.org/)
+- [TypeScript](https://www.typescriptlang.org/) (опционально)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 🚀 Быстрый старт
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Клонируй репозиторий
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+git clone https://github.com/ibragimoov/next-keycloak
+cd next-keycloak
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Установка зависимостей
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm install
+```
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+# или
+
+```bash
+yarn install
+```
+
+### 3. Настройка переменных окружения
+
+Создайте файл .env.local в корне проекта на основе .env.example:
+
+```bash
+cp .env.example .env.local
+```
+
+Заполните .env.local соответствующими значениями:
+
+```bash
+# NEXT-AUTH
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
+
+# KEYCLOAK
+KEYCLOAK_URL=
+KEYCLOAK_REALM=
+KEYCLOAK_CLIENT_ID=
+KEYCLOAK_CLIENT_SECRET=
+REFRESH_TOKEN_URL=/protocol/openid-connect/token
+END_SESSION_URL=/protocol/openid-connect/logout
+```
+
+### 4. Запуск приложения
+
+```bash
+npm run dev
+```
+
+#### или
+
+```bash
+yarn dev
+```
+
+### Структура проекта
+
+```bash
+.
+├── app
+│   ├── api
+│   │   ├── auth
+│   │   │   ├── [...nextauth]/route.ts      # NextAuth Keycloak конфиг
+│   │   │   └── logout/route.ts             # Обработка logout
+│   │   ├── http/api.ts                     # Клиент для REST API
+│   │   └── query-client.ts                 # Конфигурация QueryClient
+│   ├── dashboard
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── login
+│   │   └── page.tsx
+│   ├── layout.tsx                          # Root layout
+│   └── page.tsx                            # Главная страница
+├── components
+│   └── ui/                                 # UI-компоненты
+├── constants
+│   └── index.ts                            # Константы
+├── lib
+│   ├── auth.ts                             # Опции для next-auth с Keycloak
+│   └── utils.ts
+├── providers
+│   ├── query-provider-wrapper.tsx         # React Query provider
+│   └── session-provider-wrapper.tsx       # NextAuth session provider
+├── utils
+│   ├── encryption.ts                       # Утилиты для шифрования
+│   └── session-token-accessor.ts           # Работа с токенами сессии
+├── public
+│   └── favicon.ico
+├── styles
+│   └── globals.css                         # Стили
 ```
