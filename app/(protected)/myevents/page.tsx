@@ -149,87 +149,89 @@ export default function MyEvents() {
 
     return (
         <div className="min-h-screen bg-background">
-            <div className="flex flex-col h-full p-8">
-                <div className="flex flex-col gap-6 mb-8">
-                    <h1 className="text-2xl font-bold">Мои мероприятия</h1>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Select value={selectedType} onValueChange={setSelectedType}>
-                            <SelectTrigger className="w-[200px] bg-background">
-                                <SelectValue placeholder="Все мероприятия" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Все мероприятия</SelectItem>
-                                <SelectItem value="hackathon">Хакатоны</SelectItem>
-                                <SelectItem value="algorithms">Алгоритмы</SelectItem>
-                                <SelectItem value="web">Web-разработка</SelectItem>
-                                <SelectItem value="mobile">Мобильная разработка</SelectItem>
-                                <SelectItem value="security">Кибербезопасность</SelectItem>
-                            </SelectContent>
-                        </Select>
+            <div className="container mx-auto max-w-7xl">
+                <div className="flex flex-col h-full p-8">
+                    <div className="flex flex-col gap-6 mb-8">
+                        <h1 className="text-2xl font-bold">Мои мероприятия</h1>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <Select value={selectedType} onValueChange={setSelectedType}>
+                                <SelectTrigger className="w-[200px] bg-background">
+                                    <SelectValue placeholder="Все мероприятия" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Все мероприятия</SelectItem>
+                                    <SelectItem value="hackathon">Хакатоны</SelectItem>
+                                    <SelectItem value="algorithms">Алгоритмы</SelectItem>
+                                    <SelectItem value="web">Web-разработка</SelectItem>
+                                    <SelectItem value="mobile">Мобильная разработка</SelectItem>
+                                    <SelectItem value="security">Кибербезопасность</SelectItem>
+                                </SelectContent>
+                            </Select>
 
-                        <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                            <SelectTrigger className="w-[200px] bg-background">
-                                <SelectValue placeholder="Все статусы" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">Все статусы</SelectItem>
-                                <SelectItem value="active">Активные</SelectItem>
-                                <SelectItem value="upcoming">Предстоящие</SelectItem>
-                                <SelectItem value="completed">Завершенные</SelectItem>
-                            </SelectContent>
-                        </Select>
+                            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                                <SelectTrigger className="w-[200px] bg-background">
+                                    <SelectValue placeholder="Все статусы" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Все статусы</SelectItem>
+                                    <SelectItem value="active">Активные</SelectItem>
+                                    <SelectItem value="upcoming">Предстоящие</SelectItem>
+                                    <SelectItem value="completed">Завершенные</SelectItem>
+                                </SelectContent>
+                            </Select>
 
-                        <div className="relative w-[200px]">
-                            <Input
-                                type="text"
-                                placeholder="ДД.ММ.ГГГГ"
-                                value={date}
-                                onChange={handleDateChange}
-                                className="pr-10"
-                            />
-                            <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        </div>
+                            <div className="relative w-[200px]">
+                                <Input
+                                    type="text"
+                                    placeholder="ДД.ММ.ГГГГ"
+                                    value={date}
+                                    onChange={handleDateChange}
+                                    className="pr-10"
+                                />
+                                <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            </div>
 
-                        {date && (
-                            <Button
-                                variant="ghost"
-                                className="px-2 w-[100px]"
-                                onClick={() => setDate("")}
-                            >
-                                Сбросить дату
-                            </Button>
-                        )}
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 flex-1">
-                    {filteredEvents.map((event) => (
-                        <Card key={event.id} className="bg-background border border-border flex flex-col">
-                            <CardHeader>
-                                <div className="flex justify-between items-start">
-                                    <CardTitle className="text-xl">{event.title}</CardTitle>
-                                    {getStatusBadge(event.status)}
-                                </div>
-                                <div className="text-sm text-muted-foreground">
-                                    {event.date}
-                                </div>
-                            </CardHeader>
-                            <CardContent className="flex-1">
-                                <p className="text-sm text-muted-foreground line-clamp-6">
-                                    {event.description}
-                                </p>
-                            </CardContent>
-                            <CardFooter className="mt-auto">
+                            {date && (
                                 <Button
-                                    variant="outline"
-                                    className="w-full hover:bg-accent hover:text-accent-foreground"
-                                    onClick={() => router.push(`/my-events/${event.id}`)}
+                                    variant="ghost"
+                                    className="px-2 w-[100px]"
+                                    onClick={() => setDate("")}
                                 >
-                                    Подробнее
+                                    Сбросить дату
                                 </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {filteredEvents.map((event) => (
+                            <Card key={event.id} className="bg-background border border-border flex flex-col">
+                                <CardHeader>
+                                    <div className="flex justify-between items-start">
+                                        <CardTitle className="text-xl">{event.title}</CardTitle>
+                                        {getStatusBadge(event.status)}
+                                    </div>
+                                    <div className="text-sm text-muted-foreground">
+                                        {event.date}
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="flex-1">
+                                    <p className="text-sm text-muted-foreground line-clamp-6">
+                                        {event.description}
+                                    </p>
+                                </CardContent>
+                                <CardFooter className="mt-auto">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full hover:bg-accent hover:text-accent-foreground"
+                                        onClick={() => router.push(`/eventdetails/${event.id}`)}
+                                    >
+                                        Подробнее
+                                    </Button>
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

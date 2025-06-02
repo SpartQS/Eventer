@@ -370,85 +370,87 @@ export default function HackathonBoard() {
 
             {/* Main content */}
             <div className="flex-1 p-6">
-                <div className="space-y-6">
-                    {filteredHackathons.map((hackathon) => (
-                        <Card key={hackathon.id} className="overflow-hidden">
-                            <div className="flex h-[300px]">
-                                {/* Event poster */}
-                                <div className="w-80 flex-shrink-0 relative">
-                                    <img
-                                        src={hackathon.image}
-                                        alt={hackathon.title}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20"></div>
-                                    <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
-                                        <div>
-                                            <div className="text-3xl font-bold mb-2 tracking-wider">{hackathon.title}</div>
-                                            <div className="text-sm opacity-90">по программированию</div>
-                                        </div>
-                                        <div className="text-center">
-                                            <div className="text-xs mb-1 opacity-80">призовой фонд</div>
-                                            <div className="text-4xl font-bold mb-1">{hackathon.prizePool}</div>
-                                            <div className="text-xs opacity-80">от партнеров</div>
-                                        </div>
-                                        <div className="flex items-center justify-between">
-                                            <div className="text-xs opacity-80">оргкомитет</div>
-                                            <div className="flex space-x-1">
-                                                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                                    <div className="w-3 h-3 bg-white/60 rounded-full"></div>
-                                                </div>
-                                                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                                    <div className="w-3 h-3 bg-white/60 rounded-full"></div>
-                                                </div>
-                                                <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                                    <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                <div className="max-w-[1400px] mx-auto">
+                    <div className="space-y-6">
+                        {filteredHackathons.map((hackathon) => (
+                            <Card key={hackathon.id} className="overflow-hidden w-[1100px] mx-auto">
+                                <div className="flex h-[300px]">
+                                    {/* Event poster */}
+                                    <div className="w-80 flex-shrink-0 relative">
+                                        <img
+                                            src={hackathon.image}
+                                            alt={hackathon.title}
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20"></div>
+                                        <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
+                                            <div>
+                                                <div className="text-3xl font-bold mb-2 tracking-wider">{hackathon.title}</div>
+                                                <div className="text-sm opacity-90">по программированию</div>
+                                            </div>
+                                            <div className="text-center">
+                                                <div className="text-xs mb-1 opacity-80">призовой фонд</div>
+                                                <div className="text-4xl font-bold mb-1">{hackathon.prizePool}</div>
+                                                <div className="text-xs opacity-80">от партнеров</div>
+                                            </div>
+                                            <div className="flex items-center justify-between">
+                                                <div className="text-xs opacity-80">оргкомитет</div>
+                                                <div className="flex space-x-1">
+                                                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                                                    </div>
+                                                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                                                    </div>
+                                                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Event details */}
+                                    <CardContent className="flex-1 p-6">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-3 mb-3">
+                                                    <h3 className="text-2xl font-semibold">{hackathon.title}</h3>
+                                                    {getStatusBadge(hackathon.status)}
+                                                    {getFormatBadge(hackathon.format)}
+                                                </div>
+
+                                                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                                                    <div className="flex items-center gap-1">
+                                                        <ClockIcon className="h-4 w-4" />
+                                                        {hackathon.date}
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <MapPinIcon className="h-4 w-4" />
+                                                        {hackathon.location}
+                                                    </div>
+                                                    <div className="flex items-center gap-1">
+                                                        <UsersIcon className="h-4 w-4" />
+                                                        {hackathon.participants} участников
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <Button className="bg-green-600 hover:bg-green-700 text-white">Подробнее</Button>
+                                        </div>
+
+                                        <div className="mb-6">
+                                            <h4 className="text-sm font-medium mb-3 text-muted-foreground">Описание</h4>
+                                            <p className="text-sm leading-relaxed">{hackathon.description}</p>
+                                        </div>
+
+                                        <div className="flex justify-end">
+                                            <Button variant="outline">Подать заявку</Button>
+                                        </div>
+                                    </CardContent>
                                 </div>
-
-                                {/* Event details */}
-                                <CardContent className="flex-1 p-6">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="flex-1">
-                                            <div className="flex items-center gap-3 mb-3">
-                                                <h3 className="text-2xl font-semibold">{hackathon.title}</h3>
-                                                {getStatusBadge(hackathon.status)}
-                                                {getFormatBadge(hackathon.format)}
-                                            </div>
-
-                                            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                                                <div className="flex items-center gap-1">
-                                                    <ClockIcon className="h-4 w-4" />
-                                                    {hackathon.date}
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    <MapPinIcon className="h-4 w-4" />
-                                                    {hackathon.location}
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    <UsersIcon className="h-4 w-4" />
-                                                    {hackathon.participants} участников
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <Button className="bg-green-600 hover:bg-green-700 text-white">Подробнее</Button>
-                                    </div>
-
-                                    <div className="mb-6">
-                                        <h4 className="text-sm font-medium mb-3 text-muted-foreground">Описание</h4>
-                                        <p className="text-sm leading-relaxed">{hackathon.description}</p>
-                                    </div>
-
-                                    <div className="flex justify-end">
-                                        <Button variant="outline">Подать заявку</Button>
-                                    </div>
-                                </CardContent>
-                            </div>
-                        </Card>
-                    ))}
+                            </Card>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>

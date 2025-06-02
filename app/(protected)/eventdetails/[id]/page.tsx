@@ -2,10 +2,8 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { HackathonDetails } from "@/components/HackathonDetails";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
-import { events } from "./data";
-import { BackButton } from "./components/BackButton";
+import { BackButton } from "../components/BackButton";
+import { events } from "../data";
 
 export default function EventDetails() {
     const params = useParams();

@@ -20,7 +20,7 @@ export function useUserData(): UserData {
         id: session?.user?.id || 'N/A',
         name: session?.user?.name || 'Гость',
         email: session?.user?.email || 'N/A',
-        firstName: session?.user?.firstName,
+        firstname: session?.user?.firstname,
         lastName: session?.user?.lastName,
         username: session?.user?.username,
         avatar: session?.user?.image,

@@ -69,7 +69,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" className="transition-all duration-200 ease-linear" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

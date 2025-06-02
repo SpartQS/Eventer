@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Мое приложение',
+  title: 'Eventer',
   description: 'Описание моего приложения',
 };
 

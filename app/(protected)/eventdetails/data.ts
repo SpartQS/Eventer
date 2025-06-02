@@ -44,21 +44,25 @@ export const events = [
                 items: [
                     {
                         time: "09:00",
-                        event: "Начало"
+                        event: "Начало второго дня"
                     },
                     {
-                        time: "15:00",
-                        endTime: "16:00",
-                        event: "Чекпоинт #1"
+                        time: "14:00",
+                        endTime: "15:00",
+                        event: "Чекпоинт #3"
+                    },
+                    {
+                        time: "19:00",
+                        endTime: "20:00",
+                        event: "Чекпоинт #4"
                     },
                     {
                         time: "20:00",
-                        endTime: "21:00",
-                        event: "Чекпоинт #2"
+                        event: "Финальный стоп-код"
                     },
                     {
                         time: "21:00",
-                        event: "Стоп-код"
+                        event: "Подведение итогов"
                     }
                 ]
             }

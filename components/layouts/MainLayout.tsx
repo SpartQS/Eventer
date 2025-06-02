@@ -25,7 +25,7 @@ export default function MainLayout({
                             <ThemeToggle />
                         </div>
                     </header>
-                    <main className="flex-1">
+                    <main className="flex-1 transition-all duration-200 ease-linear">
                         {children}
                     </main>
                 </SidebarInset>
