@@ -46,17 +46,17 @@ const data = {
     },
     {
       name: "Все мероприятия",
-      url: "/events",
+      url: "/allevents",
       icon: GalleryVerticalEnd,
     },
     {
       name: "Мои мероприятия",
-      url: "/my-events",
+      url: "/myevents",
       icon: GraduationCap,
     },
     {
       name: "Создать мероприятие",
-      url: "/create-event",
+      url: "/createevent",
       icon: PlusCircle,
     },
     {

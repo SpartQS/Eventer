@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { AuthGuard } from "@/components/auth-guard"
 
-export default function ProfileLayout({
+export default function MainLayout({
     children,
 }: {
     children: React.ReactNode
