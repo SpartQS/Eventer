@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Certificates from '@/app/(protected)/certificates/components/Certificates'
 import { certificates } from './data'
 import { SearchBar } from './components/SearchBar'
+import { RoleGuard } from "@/components/role-guard"
 
 export default function CertificatesPage() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -14,18 +15,20 @@ export default function CertificatesPage() {
     )
 
     return (
-        <div className="min-h-screen bg-background p-8">
-            <div className="max-w-[1400px] mx-auto flex flex-col gap-8">
-                <div className="flex flex-col gap-6">
-                    <h1 className="text-2xl font-bold">Сертификаты</h1>
-                    <SearchBar
-                        searchQuery={searchQuery}
-                        onSearchChange={setSearchQuery}
-                    />
-                </div>
+        <RoleGuard>
+            <div className="min-h-screen bg-background p-8">
+                <div className="max-w-[1400px] mx-auto flex flex-col gap-8">
+                    <div className="flex flex-col gap-6">
+                        <h1 className="text-2xl font-bold">Сертификаты</h1>
+                        <SearchBar
+                            searchQuery={searchQuery}
+                            onSearchChange={setSearchQuery}
+                        />
+                    </div>
 
-                <Certificates certificates={filteredCertificates} />
+                    <Certificates certificates={filteredCertificates} />
+                </div>
             </div>
-        </div>
+        </RoleGuard>
     )
 } 

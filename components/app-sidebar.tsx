@@ -25,6 +25,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { useSession } from "next-auth/react"
+import { ROLES } from "@/app/config/roles"
 
 const data = {
   navSecondary: [
@@ -41,14 +43,14 @@ const data = {
   ],
   projects: [
     {
-      name: "Дашборд",
-      url: "/dashboard",
-      icon: ClipboardList,
-    },
-    {
       name: "Профиль",
       url: "/profile",
       icon: UserRound,
+    },
+    {
+      name: "Дашборд",
+      url: "/dashboard",
+      icon: ClipboardList,
     },
     {
       name: "Все мероприятия",
@@ -74,6 +76,20 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session } = useSession();
+  let filteredProjects = data.projects;
+  if (session?.role && session.role.toUpperCase() === ROLES.USER) {
+    filteredProjects = data.projects.filter(
+      (item) => item.url !== "/dashboard" && item.url !== "/createevent"
+    );
+  } else if (session?.role && session.role.toUpperCase() === ROLES.ORGANAIZER) {
+    filteredProjects = data.projects.filter(
+      (item) =>
+        item.url !== "/myevents" &&
+        item.url !== "/allevents" &&
+        item.url !== "/certificates"
+    );
+  }
   return (
     <Sidebar variant="inset" className="transition-all duration-200 ease-linear" {...props}>
       <SidebarHeader>
@@ -100,7 +116,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} />
+        <NavProjects projects={filteredProjects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

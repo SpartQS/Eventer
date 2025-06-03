@@ -48,12 +48,19 @@ export const authOptions = {
     },
     async session({ session, token }: { session: any; token: any }) {
       const decoded = jwtDecode<JwtPayload>(token.access_token);
+      
+      console.log('=== Auth Debug ===');
+      console.log('Decoded token:', decoded);
+      console.log('Resource access:', decoded.resource_access);
+      console.log('FastAPI app roles:', decoded.resource_access?.['fastapi-app']?.roles);
 
       session.access_token = encrypt(token.access_token);
       session.id_token = encrypt(token.id_token);
       session.role = decoded.resource_access?.['fastapi-app']?.roles?.[0] || '';
       session.error = token.error;
       session.user_id = decoded.sub;
+
+      console.log('Session role:', session.role);
 
       return session;
     },

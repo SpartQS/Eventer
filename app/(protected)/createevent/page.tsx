@@ -11,6 +11,7 @@ import { StepControl } from "./components/StepControl"
 import { DaySelector } from "./components/DaySelector"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
+import { RoleGuard } from "@/components/role-guard"
 
 interface Checkpoint {
     id: number
@@ -175,34 +176,36 @@ export default function CreateEvent() {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-7xl">
-            <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-4">
-                    <h1 className="text-3xl font-bold">Создание мероприятия</h1>
+        <RoleGuard>
+            <div className="container mx-auto px-4 py-8 max-w-7xl">
+                <div className="flex flex-col gap-8">
+                    <div className="flex flex-col gap-4">
+                        <h1 className="text-3xl font-bold">Создание мероприятия</h1>
+                    </div>
+
+                    <div className="space-y-8">
+                        {renderStep()}
+
+                        <StepControl
+                            currentStep={currentStep}
+                            totalSteps={totalSteps}
+                            onNext={handleNext}
+                            onBack={handleBack}
+                            isLastStep={currentStep === totalSteps}
+                            onSave={handleSave}
+                        />
+                    </div>
+
+                    <CheckpointModal
+                        isOpen={isCheckpointModalOpen}
+                        onOpenChange={setIsCheckpointModalOpen}
+                        checkpointId={editingCheckpoint || undefined}
+                        onSave={handleSaveCheckpoint}
+                        selectedDate={selectedDate}
+                        checkpoints={checkpoints}
+                    />
                 </div>
-
-                <div className="space-y-8">
-                    {renderStep()}
-
-                    <StepControl
-                        currentStep={currentStep}
-                        totalSteps={totalSteps}
-                        onNext={handleNext}
-                        onBack={handleBack}
-                        isLastStep={currentStep === totalSteps}
-                        onSave={handleSave}
-                                />
-                            </div>
-
-                <CheckpointModal
-                    isOpen={isCheckpointModalOpen}
-                    onOpenChange={setIsCheckpointModalOpen}
-                    checkpointId={editingCheckpoint || undefined}
-                    onSave={handleSaveCheckpoint}
-                    selectedDate={selectedDate}
-                    checkpoints={checkpoints}
-                />
             </div>
-        </div>
+        </RoleGuard>
     )
 } 
