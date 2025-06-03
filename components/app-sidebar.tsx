@@ -9,7 +9,8 @@ import {
   GraduationCap,
   Send,
   UserRound,
-  PlusCircle
+  PlusCircle,
+  ClipboardList
 } from "lucide-react"
 
 import { NavProjects } from "@/components/nav-projects"
@@ -42,7 +43,7 @@ const data = {
     {
       name: "Дашборд",
       url: "/dashboard",
-      icon: GalleryVerticalEnd,
+      icon: ClipboardList,
     },
     {
       name: "Профиль",
