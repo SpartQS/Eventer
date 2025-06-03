@@ -1,7 +1,7 @@
 import KeycloakProvider from 'next-auth/providers/keycloak';
 import { encrypt } from '@/app/utils/encryption';
 import { refreshAccessToken } from '@/app/api/http/api';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 const keycloakProviderOptions = {
   clientId: process.env.KEYCLOAK_CLIENT_ID!,
@@ -47,7 +47,7 @@ export const authOptions = {
       }
     },
     async session({ session, token }: { session: any; token: any }) {
-      const decoded = jwtDecode(token.access_token);
+      const decoded = jwtDecode<JwtPayload>(token.access_token);
 
       session.access_token = encrypt(token.access_token);
       session.id_token = encrypt(token.id_token);
