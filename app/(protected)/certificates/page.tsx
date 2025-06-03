@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import Certificates from '@/components/Certificates'
+import Certificates from '@/app/(protected)/certificates/components/Certificates'
 import { certificates } from './data'
 import { SearchBar } from './components/SearchBar'
 

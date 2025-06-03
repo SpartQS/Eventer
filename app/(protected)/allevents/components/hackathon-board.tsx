@@ -12,7 +12,7 @@ import { Separator } from "@/components/ui/separator"
 import { CalendarIcon, MapPinIcon, ClockIcon, UsersIcon } from "lucide-react"
 import { parse, isValid } from "date-fns"
 import { ru } from "date-fns/locale"
-import { hackathons, Hackathon } from './hackathons-data'
+import { Hackathon, hackathons } from "../data"
 
 export default function HackathonBoard() {
     const [selectedCity, setSelectedCity] = useState("all")

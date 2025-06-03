@@ -40,6 +40,11 @@ const data = {
   ],
   projects: [
     {
+      name: "Дашборд",
+      url: "/dashboard",
+      icon: GalleryVerticalEnd,
+    },
+    {
       name: "Профиль",
       url: "/profile",
       icon: UserRound,
