@@ -1,7 +1,7 @@
 'use client'
 
 import { useParams, useRouter } from "next/navigation";
-import { HackathonDetails } from "@/components/HackathonDetails";
+import { HackathonDetails } from "@/app/(protected)/eventdetails/components/HackathonDetails";
 import { BackButton } from "../components/BackButton";
 import { events } from "../data";
 
@@ -10,7 +10,6 @@ export default function EventDetails() {
     const router = useRouter();
     const id = params.id;
 
-    // Находим событие по id
     const event = events.find(e => e.id === Number(id));
 
     if (!event) {

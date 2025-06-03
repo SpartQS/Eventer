@@ -1,9 +1,9 @@
 'use client';
 
-import { ProfileCard } from "@/components/ProfileCard"
-import { Notifications } from "@/components/Notifications"
-import { CurrentEvents } from "@/components/CurrentEvents"
-import { ProfileTimer } from "@/components/ProfileTimer"
+import { ProfileCard } from "@/app/(protected)/profile/components/ProfileCard"
+import { Notifications } from "@/app/(protected)/profile/components/Notifications"
+import { CurrentEvents } from "@/app/(protected)/profile/components/CurrentEvents"
+import { ProfileTimer } from "@/app/(protected)/profile/components/ProfileTimer"
 
 export default function ProfilePage() {
     return (

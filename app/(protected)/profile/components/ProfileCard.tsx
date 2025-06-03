@@ -1,8 +1,8 @@
 'use client';
 
 import type React from "react"
-import { Mail, Edit2, Gamepad2, Laptop, Cpu, Copy } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Gamepad2, Laptop, Cpu, Copy } from "lucide-react"
+import { Avatar, AvatarImage } from "@/components/ui/avatar"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
@@ -24,6 +24,10 @@ interface ProfileInfo {
 export function ProfileCard() {
     const userData = useUserData()
 
+    if (!userData) {
+        return <div>Пользователь не авторизован</div>
+    }
+
     const stats: ProfileStat[] = [
         {
             icon: <Laptop className="size-7" />,
@@ -43,37 +47,36 @@ export function ProfileCard() {
     ]
 
     const info: ProfileInfo[] = [
-        { label: "ID", value: userData.id },
+        { label: "ID", value: userData.userId },
         { label: "Роли", value: userData.roles.join(", ") },
         { label: "Статус", value: "Активен" },
-        { label: "Имя пользователя", value: userData.username || "" },
+        { label: "Email", value: userData.email || "" },
     ]
 
     const handleCopyId = () => {
-        navigator.clipboard.writeText(userData.id)
+        navigator.clipboard.writeText(userData.userId)
         toast("ID скопирован", {
-            description: `ID: ${userData.id} скопирован в буфер обмена`,
+            description: `ID: ${userData.userId} скопирован в буфер обмена`,
             action: {
                 label: "Скопировать",
                 onClick: () => {
-                    navigator.clipboard.writeText(userData.id)
+                    navigator.clipboard.writeText(userData.userId)
                     toast("ID скопирован повторно")
                 },
             },
         })
     }
 
+
+
     return (
         <Card className="w-[500px] bg-card text-card-foreground border-border shadow-sm">
             <CardHeader className="flex flex-row items-start gap-4 p-6">
                 <Avatar className="h-24 w-24 rounded-full border-2 border-border shrink-0">
                     <AvatarImage
-                        src={userData.avatar || "https://github.com/shadcn.png"}
+                        src={"https://github.com/shadcn.png"} // У вас нет аватара в userData, используем дефолтный
                         alt="Profile picture"
                     />
-                    <AvatarFallback className="bg-muted text-muted-foreground">
-                        {userData.firstName?.[0]}{userData.lastName?.[0]}
-                    </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col flex-1 min-w-0">
                     <div className="flex justify-between items-start">
@@ -89,7 +92,7 @@ export function ProfileCard() {
                                 onClick={handleCopyId}
                             >
                                 <Badge variant="outline" className="text-xs font-normal border-border whitespace-nowrap flex items-center gap-1">
-                                    ID: {userData.id}
+                                    ID: {userData.userId.substring(0, 8)}...
                                     <Copy className="h-3 w-3" />
                                 </Badge>
                             </Button>
@@ -131,4 +134,4 @@ export function ProfileCard() {
             </CardContent>
         </Card>
     )
-} 
+}

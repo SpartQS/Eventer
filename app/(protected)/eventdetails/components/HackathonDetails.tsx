@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { CalendarIcon, RussianRuble, Heart } from "lucide-react";
-import { Separator } from "./ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
+import { CalendarIcon } from "lucide-react";
+import { Separator } from "../../../../components/ui/separator";
 
 interface TeamMember {
   name: string;

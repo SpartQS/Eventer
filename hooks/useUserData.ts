@@ -3,27 +3,31 @@
 import { useSession } from 'next-auth/react';
 
 interface UserData {
-    id: string;
     name: string;
     email: string;
-    firstName?: string;
-    lastName?: string;
-    username?: string;
-    avatar?: string;
+    userId: string;
     roles: string[];
+    expires: string;
+    accessToken: string;
+    idToken: string;
 }
 
-export function useUserData(): UserData {
+export const useUserData = (): UserData | null => {
     const { data: session } = useSession();
+    //console.log(session)
+
+    if (!session || !session.user) {
+        return null;
+    }
+
 
     return {
-        id: session?.user?.id || 'N/A',
-        name: session?.user?.name || 'Гость',
-        email: session?.user?.email || 'N/A',
-        firstname: session?.user?.firstname,
-        lastName: session?.user?.lastName,
-        username: session?.user?.username,
-        avatar: session?.user?.image,
-        roles: session?.user?.roles || [],
+        name: session.user?.name || '',
+        email: session.user?.email || '',
+        userId: session.user_id || '',
+        roles: session.roles || [],
+        expires: session.expires || '',
+        accessToken: session.access_token || '',
+        idToken: session.id_token || '',
     };
-} 
+};
