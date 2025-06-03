@@ -8,13 +8,25 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { useUserData } from "@/hooks/useUserData"
+import { useSession } from "next-auth/react"
 
-interface ProfileStat {
-    icon: React.ReactNode
-    label: string
-    value: number
-}
+const STATS = [
+    {
+        icon: <Laptop className="size-7" />,
+        label: "Хакатон",
+        value: 15,
+    },
+    {
+        icon: <Gamepad2 className="size-7" />,
+        label: "Киберспорт",
+        value: 4,
+    },
+    {
+        icon: <Cpu className="size-7" />,
+        label: "Алгоритмы",
+        value: 8,
+    },
+] as const;
 
 interface ProfileInfo {
     label: string
@@ -22,67 +34,50 @@ interface ProfileInfo {
 }
 
 export function ProfileCard() {
-    const userData = useUserData()
+    const { data: session } = useSession()
 
-    if (!userData) {
+    if (!session) {
         return <div>Пользователь не авторизован</div>
     }
 
-    const stats: ProfileStat[] = [
-        {
-            icon: <Laptop className="size-7" />,
-            label: "Хакатон",
-            value: 15,
-        },
-        {
-            icon: <Gamepad2 className="size-7" />,
-            label: "Киберспорт",
-            value: 4,
-        },
-        {
-            icon: <Cpu className="size-7" />,
-            label: "Алгоритмы",
-            value: 8,
-        },
-    ]
-
     const info: ProfileInfo[] = [
-        { label: "ID", value: userData.userId },
-        { label: "Роли", value: userData.roles.join(", ") },
+        { label: "ID", value: session.user_id || '' },
+        { label: "Роль", value: session.role || '' },
         { label: "Статус", value: "Активен" },
-        { label: "Email", value: userData.email || "" },
+        { label: "Email", value: session.user?.email || '' },
     ]
 
     const handleCopyId = () => {
-        navigator.clipboard.writeText(userData.userId)
-        toast("ID скопирован", {
-            description: `ID: ${userData.userId} скопирован в буфер обмена`,
-            action: {
-                label: "Скопировать",
-                onClick: () => {
-                    navigator.clipboard.writeText(userData.userId)
-                    toast("ID скопирован повторно")
+        if (!session.user_id) return;
+
+        const copyToClipboard = () => {
+            navigator.clipboard.writeText(session.user_id)
+            toast("ID скопирован", {
+                description: `ID: ${session.user_id} скопирован в буфер обмена`,
+                action: {
+                    label: "Скопировать",
+                    onClick: copyToClipboard,
                 },
-            },
-        })
+            })
+        }
+
+        copyToClipboard()
     }
-
-
 
     return (
         <Card className="w-[500px] bg-card text-card-foreground border-border shadow-sm">
             <CardHeader className="flex flex-row items-start gap-4 p-6">
                 <Avatar className="h-24 w-24 rounded-full border-2 border-border shrink-0">
                     <AvatarImage
-                        src={"https://github.com/shadcn.png"} // У вас нет аватара в userData, используем дефолтный
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(session.user?.name || '')}&background=random`}
                         alt="Profile picture"
                     />
                 </Avatar>
                 <div className="flex flex-col flex-1 min-w-0">
                     <div className="flex justify-between items-start">
                         <div className="min-w-0">
-                            <h2 className="text-2xl font-semibold text-foreground mt-4">{userData.name}</h2>
-                            <p className="text-lg text-muted-foreground mt-1">{userData.email}</p>
+                            <h2 className="text-2xl font-semibold text-foreground mt-4">{session.user?.name || 'Пользователь'}</h2>
+                            <p className="text-lg text-muted-foreground mt-1">{session.user?.email || 'Нет email'}</p>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                             <Button
@@ -92,7 +87,7 @@ export function ProfileCard() {
                                 onClick={handleCopyId}
                             >
                                 <Badge variant="outline" className="text-xs font-normal border-border whitespace-nowrap flex items-center gap-1">
-                                    ID: {userData.userId.substring(0, 8)}...
+                                    ID: {session.user_id ? `${session.user_id.substring(0, 8)}...` : 'Нет ID'}
                                     <Copy className="h-3 w-3" />
                                 </Badge>
                             </Button>
@@ -104,7 +99,7 @@ export function ProfileCard() {
                 <div className="px-6 py-4">
                     <h3 className="text-xl font-medium mb-4 text-foreground">Участвовал</h3>
                     <div className="flex justify-between">
-                        {stats.map((stat, index) => (
+                        {STATS.map((stat, index) => (
                             <div key={index} className="flex flex-col items-center">
                                 <div className="mb-2 text-muted-foreground">{stat.icon}</div>
                                 <span className="text-base text-muted-foreground truncate">{stat.label}</span>

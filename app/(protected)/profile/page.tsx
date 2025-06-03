@@ -1,9 +1,13 @@
-'use client';
-
 import { ProfileCard } from "@/app/(protected)/profile/components/ProfileCard"
 import { Notifications } from "@/app/(protected)/profile/components/Notifications"
 import { CurrentEvents } from "@/app/(protected)/profile/components/CurrentEvents"
 import { ProfileTimer } from "@/app/(protected)/profile/components/ProfileTimer"
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Профиль пользователя',
+    description: 'Просмотр и управление профилем пользователя',
+};
 
 export default function ProfilePage() {
     return (

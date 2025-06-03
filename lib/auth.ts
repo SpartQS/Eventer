@@ -21,7 +21,6 @@ export const authOptions = {
       const current_timestamp = Math.floor(Date.now() / 1000);
 
       if (account) {
-        token.decoded = jwtDecode(account.access_token);
         token.access_token = account.access_token;
         token.id_token = account.id_token;
         token.expires_at = account.expires_at;
@@ -40,7 +39,6 @@ export const authOptions = {
         token.id_token = refreshedToken.id_token;
         token.refresh_token = refreshedToken.refresh_token;
         token.expires_at = current_timestamp + refreshedToken.expires_in;
-        token.decoded = jwtDecode(refreshedToken.access_token);
 
         return token;
       } catch (error) {
@@ -49,11 +47,13 @@ export const authOptions = {
       }
     },
     async session({ session, token }: { session: any; token: any }) {
+      const decoded = jwtDecode(token.access_token);
+
       session.access_token = encrypt(token.access_token);
       session.id_token = encrypt(token.id_token);
-      session.roles = token.decoded.realm_access.roles;
+      session.role = decoded.resource_access?.['fastapi-app']?.roles?.[0] || '';
       session.error = token.error;
-      session.user_id = token.decoded.sub;
+      session.user_id = decoded.sub;
 
       return session;
     },
