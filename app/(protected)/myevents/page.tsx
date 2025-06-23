@@ -151,11 +151,11 @@ export default function MyEvents() {
     return (
         <RoleGuard>
             <div className="min-h-screen bg-background">
-                <div className="container mx-auto max-w-7xl">
-                    <div className="flex flex-col h-full p-8">
-                        <div className="flex flex-col gap-6 mb-8">
-                            <h1 className="text-2xl font-bold">Мои мероприятия</h1>
-                            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="container mx-auto max-w-7xl px-2 sm:px-4 md:px-8">
+                    <div className="flex flex-col h-full p-2 sm:p-4 md:p-8">
+                        <div className="flex flex-col gap-4 sm:gap-6 mb-4 sm:mb-8">
+                            <h1 className="text-xl sm:text-2xl font-bold">Мои мероприятия</h1>
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
                                 <Select value={selectedType} onValueChange={setSelectedType}>
                                     <SelectTrigger className="w-[200px] bg-background">
                                         <SelectValue placeholder="Все мероприятия" />
@@ -205,27 +205,27 @@ export default function MyEvents() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {filteredEvents.map((event) => (
                                 <Card key={event.id} className="bg-background border border-border flex flex-col">
-                                    <CardHeader className="p-4 md:p-6">
-                                        <div className="flex justify-between items-start">
-                                            <CardTitle className="text-lg md:text-xl break-words">{event.title}</CardTitle>
+                                    <CardHeader className="p-3 sm:p-4 md:p-6">
+                                        <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start">
+                                            <CardTitle className="text-base sm:text-lg md:text-xl break-words">{event.title}</CardTitle>
                                             {getStatusBadge(event.status)}
                                         </div>
-                                        <div className="text-xs md:text-sm text-muted-foreground break-words">
+                                        <div className="text-xs sm:text-sm text-muted-foreground break-words">
                                             {event.date}
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="flex-1 p-4 md:p-6">
-                                        <p className="text-xs md:text-sm text-muted-foreground line-clamp-6 break-words">
+                                    <CardContent className="flex-1 p-3 sm:p-4 md:p-6">
+                                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-6 break-words">
                                             {event.description}
                                         </p>
                                     </CardContent>
-                                    <CardFooter className="mt-auto p-4 md:p-6">
+                                    <CardFooter className="mt-auto p-3 sm:p-4 md:p-6">
                                         <Button
                                             variant="outline"
-                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs md:text-base"
+                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs sm:text-sm md:text-base"
                                             onClick={() => router.push(`/eventdetails/${event.id}`)}
                                         >
                                             Подробнее
