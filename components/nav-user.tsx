@@ -22,11 +22,11 @@ export function NavUser() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    await signOut({
-      redirect: false,
-      callbackUrl: "/"
-    })
-    router.push("/")
+    try {
+      await fetch('/api/auth/logout', { method: 'GET' });
+    } catch (e) {
+    }
+    await signOut({ callbackUrl: '/' });
   }
 
   return (

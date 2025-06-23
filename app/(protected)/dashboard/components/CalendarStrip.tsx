@@ -37,35 +37,41 @@ function getFormatBadge(format: string) {
 
 function EventCard({ event }: { event: Hackathon }) {
     return (
-        <Card className="w-full flex flex-row overflow-hidden bg-card border border-border">
-            <div className="relative w-[340px] min-h-[320px] flex-shrink-0">
+        <Card className="w-full flex flex-col md:flex-row overflow-hidden bg-card border border-border">
+            <div className="relative w-full h-48 md:w-[340px] md:min-h-[320px] flex-shrink-0">
                 <Image src={event.image} alt={event.title} fill className="object-cover" />
-                <div className="absolute left-0 bottom-0 w-full p-6 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-2">
-                    <span className="text-2xl font-bold text-white">{event.title}</span>
-                    <span className="text-base text-white/80">по программированию</span>
-                    <div className="mt-4">
-                        <span className="text-3xl font-extrabold text-white">{event.prizePool}</span>
-                        <span className="ml-2 text-white/70 text-sm">призовой фонд</span>
+                <div className="absolute left-0 bottom-0 w-full p-3 md:p-6 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-2">
+                    <span className="text-lg md:text-2xl font-bold text-white break-words">{event.title}</span>
+                    <span className="text-xs md:text-base text-white/80 break-words">
+                        по программированию
+                    </span>
+                    <div className="mt-2 md:mt-4">
+                        <span className="text-xl md:text-3xl font-extrabold text-white">{event.prizePool}</span>
+                        <span className="ml-2 text-white/70 text-xs md:text-sm">
+                            призовой фонд
+                        </span>
                     </div>
-                    <span className="text-xs text-white/60 mt-2">от партнеров</span>
+                    <span className="text-xs text-white/60 mt-2">от партнёров</span>
                     <span className="text-xs text-white/60 mt-2">оргкомитет</span>
                 </div>
             </div>
-            <div className="flex flex-col flex-1 p-6 gap-2">
-                <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl font-bold">{event.title}</span>
+            <div className="flex flex-col flex-1 p-3 md:p-6 gap-2">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className="text-lg md:text-2xl font-bold break-words">{event.title}</span>
                     {getStatusBadge(event.status)}
                     {getFormatBadge(event.format)}
                 </div>
-                <div className="flex items-center gap-4 text-muted-foreground text-base mb-2">
-                    <CalendarIcon className="w-5 h-5" /> {event.date}
-                    <MapPinIcon className="w-5 h-5" /> {event.location}
-                    <UsersIcon className="w-5 h-5" /> {event.participants} участников
+                <div className="flex flex-wrap items-center gap-2 md:gap-4 text-muted-foreground text-xs md:text-base mb-2">
+                    <CalendarIcon className="w-4 h-4 md:w-5 md:h-5" /> {event.date}
+                    <MapPinIcon className="w-4 h-4 md:w-5 md:h-5" /> {event.location}
+                    <UsersIcon className="w-4 h-4 md:w-5 md:h-5" /> {event.participants} участников
                 </div>
-                <div className="font-semibold text-base mt-2">Описание</div>
-                <div className="text-base mb-4">{event.description}</div>
-                <div className="flex gap-4 mt-auto">
-                    <Button className="bg-green-600 hover:bg-green-700 text-white">Подробнее</Button>
+                <div className="font-semibold text-xs md:text-base mt-2">Описание</div>
+                <div className="text-xs md:text-base mb-4 break-words">{event.description}</div>
+                <div className="flex gap-2 md:gap-4 mt-auto">
+                    <Button className="bg-green-600 hover:bg-green-700 text-white w-full md:w-auto text-xs md:text-base">
+                        Подробнее
+                    </Button>
                 </div>
             </div>
         </Card>
@@ -155,12 +161,12 @@ export default function CalendarStrip() {
 
     return (
         <div className="w-full flex flex-col items-center">
-            <div className="flex items-center gap-4 mb-4">
-                <Badge variant="secondary" className="text-base font-medium px-4 py-2 h-9 flex items-center min-w-[80px] justify-center">
+            <div className="flex flex-col md:flex-row items-stretch md:items-center gap-3 md:gap-4 mb-4 w-full">
+                <Badge variant="secondary" className="text-base font-medium px-4 py-2 h-9 flex items-center min-w-[80px] justify-center w-full md:w-auto">
                     {WEEKDAYS[selectedDate.getDay()]}, {selectedDate.getDate()}
                 </Badge>
                 <Select value={selectedMonth.toString()} onValueChange={handleMonthChange}>
-                    <SelectTrigger className="w-[140px] h-10">
+                    <SelectTrigger className="w-full md:w-[140px] h-10">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -170,7 +176,7 @@ export default function CalendarStrip() {
                     </SelectContent>
                 </Select>
                 <Select value={selectedYear.toString()} onValueChange={handleYearChange}>
-                    <SelectTrigger className="w-[100px] h-10">
+                    <SelectTrigger className="w-full md:w-[100px] h-10">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="max-h-60 overflow-y-auto">

@@ -208,24 +208,24 @@ export default function MyEvents() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredEvents.map((event) => (
                                 <Card key={event.id} className="bg-background border border-border flex flex-col">
-                                    <CardHeader>
+                                    <CardHeader className="p-4 md:p-6">
                                         <div className="flex justify-between items-start">
-                                            <CardTitle className="text-xl">{event.title}</CardTitle>
+                                            <CardTitle className="text-lg md:text-xl break-words">{event.title}</CardTitle>
                                             {getStatusBadge(event.status)}
                                         </div>
-                                        <div className="text-sm text-muted-foreground">
+                                        <div className="text-xs md:text-sm text-muted-foreground break-words">
                                             {event.date}
                                         </div>
                                     </CardHeader>
-                                    <CardContent className="flex-1">
-                                        <p className="text-sm text-muted-foreground line-clamp-6">
+                                    <CardContent className="flex-1 p-4 md:p-6">
+                                        <p className="text-xs md:text-sm text-muted-foreground line-clamp-6 break-words">
                                             {event.description}
                                         </p>
                                     </CardContent>
-                                    <CardFooter className="mt-auto">
+                                    <CardFooter className="mt-auto p-4 md:p-6">
                                         <Button
                                             variant="outline"
-                                            className="w-full hover:bg-accent hover:text-accent-foreground"
+                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs md:text-base"
                                             onClick={() => router.push(`/eventdetails/${event.id}`)}
                                         >
                                             Подробнее
