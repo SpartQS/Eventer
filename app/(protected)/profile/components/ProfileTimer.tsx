@@ -146,31 +146,31 @@ export function ProfileTimer() {
     }
 
     return (
-        <Card className="bg-card text-card-foreground border-border h-[450px] flex-1">
+        <Card className="bg-card text-card-foreground border-border h-[350px] md:h-[450px] flex-1 min-w-0">
             <CardHeader>
-                <CardTitle className="text-xl font-semibold text-foreground flex items-center gap-2">
-                    <Clock className="h-5 w-5" />
+                <CardTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
+                    <Clock className="h-6 w-6" />
                     Таймер
                 </CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col justify-center items-center h-[calc(100%-60px)] space-y-4">
-                <div className="text-lg font-medium text-foreground mb-2">
+            <CardContent className="flex flex-col justify-center items-center h-[calc(100%-60px)] space-y-3 md:space-y-4">
+                <div className="text-base md:text-lg font-medium text-foreground mb-2 text-center">
                     {timers[currentTimerIndex].title}
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                    <div className="flex items-center gap-4">
-                        <div className="text-6xl font-mono font-bold">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <div className="text-3xl md:text-6xl font-mono font-bold">
                             {formatTime(timerStates[currentTimerIndex])}
                         </div>
-                        <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-all"></div>
+                        <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-all"></div>
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-xs md:text-sm text-muted-foreground">
                         Время до следующей стадии
                     </div>
                 </div>
                 <button
                     onClick={switchTimer}
-                    className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+                    className="flex items-center gap-2 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors"
                 >
                     <ArrowLeftRight className="h-4 w-4" />
                     Сменить ивент

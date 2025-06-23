@@ -86,7 +86,7 @@ export function Notifications() {
                                             Вы точно хотите принять заявку на вступление?
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
-                                    <AlertDialogFooter>
+                                    <AlertDialogFooter className="flex flex-col md:flex-row gap-2">
                                         <AlertDialogAction onClick={() => handleAccept(notification.id)}>
                                             Принять
                                         </AlertDialogAction>
@@ -112,7 +112,7 @@ export function Notifications() {
                                             Вы точно хотите отклонить заявку на вступление?
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
-                                    <AlertDialogFooter>
+                                    <AlertDialogFooter className="flex flex-col md:flex-row gap-2">
                                         <AlertDialogAction onClick={() => handleDecline(notification.id)}>
                                             Отклонить
                                         </AlertDialogAction>

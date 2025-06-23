@@ -9,10 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { CalendarIcon, MapPinIcon, ClockIcon, UsersIcon } from "lucide-react"
+import { CalendarIcon, MapPinIcon, ClockIcon, UsersIcon, X } from "lucide-react"
 import { parse, isValid } from "date-fns"
 import { ru } from "date-fns/locale"
 import { Hackathon, hackathons } from "../data"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 
 export default function HackathonBoard() {
     const [selectedCity, setSelectedCity] = useState("all")
@@ -22,6 +23,8 @@ export default function HackathonBoard() {
     const [offlineChecked, setOfflineChecked] = useState(false)
     const [hybridChecked, setHybridChecked] = useState(false)
     const [date, setDate] = useState("")
+    const [showFilters, setShowFilters] = useState(false)
+    const [searchTitle, setSearchTitle] = useState("")
 
     // Функция для преобразования строки даты в объект Date
     const parseEventDate = (dateStr: string) => {
@@ -36,6 +39,10 @@ export default function HackathonBoard() {
 
     // Функция фильтрации хакатонов
     const filteredHackathons = hackathons.filter(hackathon => {
+        // Поиск по названию
+        if (searchTitle && !hackathon.title.toLowerCase().includes(searchTitle.toLowerCase())) {
+            return false;
+        }
         // Фильтр по городу
         if (selectedCity !== "all") {
             switch (selectedCity) {
@@ -192,11 +199,139 @@ export default function HackathonBoard() {
     };
 
     return (
-        <div className="flex">
+        <div className="flex flex-col md:flex-row">
+            {/* Поиск и фильтры в одну строку на мобильных */}
+            <div className="md:hidden flex items-center justify-between gap-2 mt-4 mb-4 px-2 sm:px-4 md:px-6">
+                <Input
+                    type="text"
+                    placeholder="Поиск по названию мероприятия..."
+                    value={searchTitle}
+                    onChange={e => setSearchTitle(e.target.value)}
+                    className="w-full min-w-[120px]"
+                />
+                <Button variant="outline" className="ml-2 flex-shrink-0" onClick={() => setShowFilters(true)}>
+                    Фильтры
+                </Button>
+            </div>
+            <Dialog open={showFilters} onOpenChange={setShowFilters}>
+                <DialogContent showCloseButton={false} className="max-w-xs w-full rounded-2xl p-4 pt-6 max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle className="text-center w-full">Фильтры</DialogTitle>
+                        <DialogClose asChild>
+                            <Button variant="ghost" size="icon" className="absolute right-2 top-2 rounded-full p-2" onClick={() => setShowFilters(false)} aria-label="Закрыть фильтры">
+                                <X className="w-6 h-6" />
+                            </Button>
+                        </DialogClose>
+                    </DialogHeader>
+                    <div className="space-y-6">
+                        {/* City filter */}
+                        <div className="space-y-2">
+                            <Label htmlFor="city-select">Город</Label>
+                            <Select value={selectedCity} onValueChange={setSelectedCity}>
+                                <SelectTrigger id="city-select">
+                                    <SelectValue placeholder="Все города" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Все города</SelectItem>
+                                    <SelectItem value="moscow">Москва</SelectItem>
+                                    <SelectItem value="spb">Санкт-Петербург</SelectItem>
+                                    <SelectItem value="ekb">Екатеринбург</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Separator />
+                        {/* Date filter */}
+                        <div className="space-y-2">
+                            <Label htmlFor="date-input">Дата</Label>
+                            <div className="relative">
+                                <Input
+                                    id="date-input"
+                                    type="text"
+                                    placeholder="ДД.ММ.ГГГГ"
+                                    value={date}
+                                    onChange={handleDateChange}
+                                    className="pr-10"
+                                />
+                                <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            </div>
+                        </div>
+                        <Separator />
+                        {/* Status filter */}
+                        <div className="space-y-2">
+                            <Label htmlFor="status-select">Статус</Label>
+                            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+                                <SelectTrigger id="status-select">
+                                    <SelectValue placeholder="Все статусы" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Все статусы</SelectItem>
+                                    <SelectItem value="active">Активные</SelectItem>
+                                    <SelectItem value="completed">Завершенные</SelectItem>
+                                    <SelectItem value="upcoming">Предстоящие</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Separator />
+                        {/* Event type filter */}
+                        <div className="space-y-2">
+                            <Label htmlFor="event-type-select">Тип мероприятия</Label>
+                            <Select value={selectedEventType} onValueChange={setSelectedEventType}>
+                                <SelectTrigger id="event-type-select">
+                                    <SelectValue placeholder="Все мероприятия" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Все мероприятия</SelectItem>
+                                    <SelectItem value="hackathon">Хакатоны</SelectItem>
+                                    <SelectItem value="contest">Алгоритмы</SelectItem>
+                                    <SelectItem value="cybersport">Киберспорт</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <Separator />
+                        {/* Format filter */}
+                        <div className="space-y-3">
+                            <Label>Формат</Label>
+                            <div className="space-y-3">
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="online"
+                                        checked={onlineChecked}
+                                        onCheckedChange={(checked) => setOnlineChecked(checked === true)}
+                                    />
+                                    <Label htmlFor="online" className="text-sm font-normal">
+                                        Онлайн
+                                    </Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="offline"
+                                        checked={offlineChecked}
+                                        onCheckedChange={(checked) => setOfflineChecked(checked === true)}
+                                    />
+                                    <Label htmlFor="offline" className="text-sm font-normal">
+                                        Офлайн
+                                    </Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="hybrid"
+                                        checked={hybridChecked}
+                                        onCheckedChange={(checked) => setHybridChecked(checked === true)}
+                                    />
+                                    <Label htmlFor="hybrid" className="text-sm font-normal">
+                                        Гибрид
+                                    </Label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
             {/* Sidebar with filters */}
-            <Card className="w-80 h-[calc(100vh-4rem)] sticky top-16 rounded-none border-r border-border bg-card overflow-y-auto">
+            <Card className="hidden md:block w-full md:w-80 h-auto md:h-[calc(100vh-4rem)] md:sticky md:top-16 rounded-none md:border-r border-border bg-card overflow-y-auto mb-4 md:mb-0">
                 <CardHeader>
-                    <CardTitle className="text-xl">Фильтры</CardTitle>
+                    <CardTitle className="text-xl mb-4">Фильтры</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                     {/* City filter */}
@@ -311,41 +446,51 @@ export default function HackathonBoard() {
             </Card>
 
             {/* Main content */}
-            <div className="flex-1 p-6">
-                <div className="max-w-[1400px] mx-auto">
-                    <div className="space-y-6">
+            <div className="flex-1 p-2 sm:p-4 md:p-6">
+                <div className="w-full md:w-[1100px] mx-auto">
+                    {/* Только на десктопе — поиск над карточками */}
+                    <div className="hidden md:block mb-4">
+                        <Input
+                            type="text"
+                            placeholder="Поиск по названию мероприятия..."
+                            value={searchTitle}
+                            onChange={e => setSearchTitle(e.target.value)}
+                            className="w-[25%] min-w-[220px]"
+                        />
+                    </div>
+                    <div className="space-y-4 md:space-y-6">
                         {filteredHackathons.map((hackathon) => (
-                            <Card key={hackathon.id} className="overflow-hidden w-[1100px] mx-auto">
-                                <div className="flex h-[300px]">
+                            <Card key={hackathon.id} className="overflow-hidden w-full">
+                                <div className="flex flex-col md:flex-row h-auto md:h-[300px]">
                                     {/* Event poster */}
-                                    <div className="w-80 flex-shrink-0 relative">
+                                    <div className="w-full md:w-80 h-48 md:h-auto flex-shrink-0 relative">
                                         <img
                                             src={hackathon.image}
                                             alt={hackathon.title}
                                             className="absolute inset-0 w-full h-full object-cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20"></div>
-                                        <div className="absolute inset-0 p-6 flex flex-col justify-between text-white">
+                                        <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between text-white">
                                             <div>
-                                                <div className="text-3xl font-bold mb-2 tracking-wider">{hackathon.title}</div>
-                                                <div className="text-sm opacity-90">по программированию</div>
+                                                <div className="text-xl md:text-3xl font-bold mb-2 tracking-wider">{hackathon.title}</div>
+                                                <div className="text-xs md:text-sm opacity-90">по программированию</div>
                                             </div>
                                             <div className="text-center">
                                                 <div className="text-xs mb-1 opacity-80">призовой фонд</div>
-                                                <div className="text-4xl font-bold mb-1">{hackathon.prizePool}</div>
+                                                <div className="text-2xl md:text-4xl font-bold mb-1">{hackathon.prizePool}</div>
                                                 <div className="text-xs opacity-80">от партнеров</div>
                                             </div>
                                             <div className="flex items-center justify-between">
                                                 <div className="text-xs opacity-80">оргкомитет</div>
                                                 <div className="flex space-x-1">
-                                                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                                                    <div className="w-5 h-5 md:w-6 md:h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-white/60 rounded-full"></div>
                                                     </div>
-                                                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                                                    <div className="w-5 h-5 md:w-6 md:h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-white/60 rounded-full"></div>
                                                     </div>
-                                                    <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                                                        <div className="w-3 h-3 bg-white/60 rounded-full"></div>
+                                                    <div className="w-5 h-5 md:w-6 md:h-6 bg-white/20 rounded-full flex items-center justify-center">
+                                                        <div className="w-2.5 h-2.5 md:w-3 md:h-3 bg-white/60 rounded-full"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -353,16 +498,16 @@ export default function HackathonBoard() {
                                     </div>
 
                                     {/* Event details */}
-                                    <CardContent className="flex-1 p-6">
-                                        <div className="flex justify-between items-start mb-4">
+                                    <CardContent className="flex-1 p-4 md:p-6">
+                                        <div className="flex flex-col md:flex-row justify-between items-start mb-4 gap-2 md:gap-0">
                                             <div className="flex-1">
-                                                <div className="flex items-center gap-3 mb-3">
-                                                    <h3 className="text-2xl font-semibold">{hackathon.title}</h3>
+                                                <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
+                                                    <h3 className="text-lg md:text-2xl font-semibold">{hackathon.title}</h3>
                                                     {getStatusBadge(hackathon.status)}
                                                     {getFormatBadge(hackathon.format)}
                                                 </div>
 
-                                                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                                                <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground mb-2 md:mb-4">
                                                     <div className="flex items-center gap-1">
                                                         <ClockIcon className="h-4 w-4" />
                                                         {hackathon.date}
@@ -377,16 +522,15 @@ export default function HackathonBoard() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <Button className="bg-green-600 hover:bg-green-700 text-white">Подробнее</Button>
                                         </div>
 
-                                        <div className="mb-6">
-                                            <h4 className="text-sm font-medium mb-3 text-muted-foreground">Описание</h4>
-                                            <p className="text-sm leading-relaxed">{hackathon.description}</p>
+                                        <div className="mb-4 md:mb-6">
+                                            <h4 className="text-xs md:text-sm font-medium mb-2 md:mb-3 text-muted-foreground">Описание</h4>
+                                            <p className="text-xs md:text-sm leading-relaxed">{hackathon.description}</p>
                                         </div>
 
                                         <div className="flex justify-end">
-                                            <Button variant="outline">Подать заявку</Button>
+                                            <Button className="bg-green-600 hover:bg-green-700 text-white w-full md:w-auto">Подробнее</Button>
                                         </div>
                                     </CardContent>
                                 </div>

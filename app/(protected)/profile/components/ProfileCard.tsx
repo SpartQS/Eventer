@@ -65,40 +65,40 @@ export function ProfileCard() {
     }
 
     return (
-        <Card className="w-[500px] bg-card text-card-foreground border-border shadow-sm">
-            <CardHeader className="flex flex-row items-start gap-4 p-6">
-                <Avatar className="h-24 w-24 rounded-full border-2 border-border shrink-0">
+        <Card className="w-full max-w-[500px] bg-card text-card-foreground border-border shadow-sm mx-auto md:mx-0">
+            <CardHeader className="flex flex-row items-center gap-4 p-4 sm:p-6 justify-between">
+                <Avatar className="h-20 w-20 md:h-24 md:w-24 rounded-full border-2 border-border shrink-0">
                     <AvatarImage
                         src={`https://ui-avatars.com/api/?name=${encodeURIComponent(session.user?.name || '')}&background=random`}
                         alt="Profile picture"
                     />
                 </Avatar>
-                <div className="flex flex-col flex-1 min-w-0">
-                    <div className="flex justify-between items-start">
-                        <div className="min-w-0">
-                            <h2 className="text-2xl font-semibold text-foreground mt-4">{session.user?.name || 'Пользователь'}</h2>
-                            <p className="text-lg text-muted-foreground mt-1">{session.user?.email || 'Нет email'}</p>
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 px-2 hover:bg-accent hover:text-accent-foreground"
-                                onClick={handleCopyId}
-                            >
-                                <Badge variant="outline" className="text-xs font-normal border-border whitespace-nowrap flex items-center gap-1">
-                                    ID: {session.user_id ? `${session.user_id.substring(0, 8)}...` : 'Нет ID'}
-                                    <Copy className="h-3 w-3" />
-                                </Badge>
-                            </Button>
+                <div className="flex flex-col flex-1 min-w-0 w-full">
+                    <div className="flex justify-between items-start w-full gap-2">
+                        <div className="min-w-0 flex flex-col gap-1">
+                            <h2 className="text-xl md:text-2xl font-semibold text-foreground mt-2 md:mt-4 truncate">{session.user?.name || 'Пользователь'}</h2>
+                            <p className="text-base md:text-lg text-muted-foreground mt-1">{session.user?.email || 'Нет email'}</p>
+                            <div className="flex items-center gap-2 mt-1 w-fit">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 px-2 hover:bg-accent hover:text-accent-foreground"
+                                    onClick={handleCopyId}
+                                >
+                                    <Badge variant="outline" className="text-xs font-normal border-border whitespace-nowrap flex items-center gap-1">
+                                        ID: {session.user_id ? `${session.user_id.substring(0, 8)}...` : 'Нет ID'}
+                                        <Copy className="h-3 w-3" />
+                                    </Badge>
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="p-0">
-                <div className="px-6 py-4">
-                    <h3 className="text-xl font-medium mb-4 text-foreground">Участвовал</h3>
-                    <div className="flex justify-between">
+                <div className="px-4 sm:px-6 py-4">
+                    <h3 className="text-lg md:text-xl font-medium mb-4 text-foreground">Участвовал</h3>
+                    <div className="flex flex-row justify-between gap-4 md:gap-2">
                         {STATS.map((stat, index) => (
                             <div key={index} className="flex flex-col items-center">
                                 <div className="mb-2 text-muted-foreground">{stat.icon}</div>
@@ -109,8 +109,8 @@ export function ProfileCard() {
                     </div>
                 </div>
                 <Separator className="bg-border my-4" />
-                <div className="px-6 pb-6">
-                    <h3 className="text-xl font-medium mb-4 text-foreground">Информация</h3>
+                <div className="px-4 sm:px-6 pb-6">
+                    <h3 className="text-lg md:text-xl font-medium mb-4 text-foreground">Информация</h3>
                     <div className="space-y-3">
                         {info.map((item, index) => (
                             <div key={index} className="flex items-center">
