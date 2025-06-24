@@ -10,12 +10,13 @@ import { Home, LogOut } from 'lucide-react';
 export const Sidebar = () => {
     const { mutate } = useApiLogout();
 
-    const handleLogout = (): void => {
-        mutate(undefined, {
-            onSuccess: () => {
-                signOut({ callbackUrl: '/login' });
-            },
-        });
+    const handleLogout = async (): Promise<void> => {
+        try {
+            await fetch('/api/auth/logout', { method: 'GET' });
+        } catch (e) {
+            // Можно добавить обработку ошибки, если нужно
+        }
+        await signOut({ callbackUrl: '/login' });
     };
 
     return (
