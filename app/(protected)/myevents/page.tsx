@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Laptop, BrainCircuit, Globe, Smartphone, Shield } from "lucide-react"
 import { parse, isValid } from "date-fns"
 import { ru } from "date-fns/locale"
 import { Badge } from "@/components/ui/badge"
@@ -127,6 +127,35 @@ export default function MyEvents() {
         }
     }
 
+    const getEventTypeIcon = (type: string) => {
+        const iconProps = { className: "w-12 h-12 text-muted-foreground" };
+        switch (type) {
+            case "hackathon":
+                return <Laptop {...iconProps} />;
+            case "algorithms":
+                return <BrainCircuit {...iconProps} />;
+            case "web":
+                return <Globe {...iconProps} />;
+            case "mobile":
+                return <Smartphone {...iconProps} />;
+            case "security":
+                return <Shield {...iconProps} />;
+            default:
+                return <Laptop {...iconProps} />;
+        }
+    };
+
+    const getTypeTranslation = (type: string) => {
+        switch (type) {
+            case "hackathon": return "Хакатон";
+            case "algorithms": return "Алгоритмы";
+            case "web": return "Web-разработка";
+            case "mobile": return "Mobile-разработка";
+            case "security": return "Кибербезопасность";
+            default: return "Мероприятие";
+        }
+    }
+
     const filteredEvents = events.filter(event => {
         const matchesType = selectedType === "all" || event.type === selectedType
         const matchesStatus = selectedStatus === "all" || event.status === selectedStatus
@@ -205,27 +234,24 @@ export default function MyEvents() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                             {filteredEvents.map((event) => (
-                                <Card key={event.id} className="bg-background border border-border flex flex-col">
-                                    <CardHeader className="p-3 sm:p-4 md:p-6">
-                                        <div className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start">
-                                            <CardTitle className="text-base sm:text-lg md:text-xl break-words">{event.title}</CardTitle>
+                                <Card key={event.id} className="bg-background border border-border flex flex-col text-center p-4 justify-between min-h-[260px]">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <CardHeader className="p-0">
+                                            <CardTitle className="text-base md:text-lg break-words line-clamp-1">{event.title}</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="p-0 flex flex-col items-center gap-3">
+                                            {getEventTypeIcon(event.type)}
+                                            <div className="text-xs text-muted-foreground">{getTypeTranslation(event.type)}</div>
+                                            <div className="text-xs sm:text-sm text-muted-foreground break-words pt-1">{event.date}</div>
                                             {getStatusBadge(event.status)}
-                                        </div>
-                                        <div className="text-xs sm:text-sm text-muted-foreground break-words">
-                                            {event.date}
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="flex-1 p-3 sm:p-4 md:p-6">
-                                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-6 break-words">
-                                            {event.description}
-                                        </p>
-                                    </CardContent>
-                                    <CardFooter className="mt-auto p-3 sm:p-4 md:p-6">
+                                        </CardContent>
+                                    </div>
+                                    <CardFooter className="p-0 pt-2">
                                         <Button
                                             variant="outline"
-                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs sm:text-sm md:text-base"
+                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs sm:text-sm"
                                             onClick={() => router.push(`/eventdetails/${event.id}`)}
                                         >
                                             Подробнее

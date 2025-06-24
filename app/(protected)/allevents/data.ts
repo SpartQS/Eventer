@@ -10,6 +10,9 @@ export interface Hackathon {
     format: "online" | "offline" | "hybrid"
     image: string
     type: "hackathon" | "contest" | "cybersport"
+    organizer: string
+    contacts: string
+    capacity: number
 }
 
 export const hackathons: Hackathon[] = [
@@ -25,7 +28,10 @@ export const hackathons: Hackathon[] = [
         status: "active",
         format: "hybrid",
         image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        type: "hackathon"
+        type: "hackathon",
+        organizer: "ИТ-компания XYZ",
+        contacts: "+7 999 123-45-67, info@xyz.ru",
+        capacity: 200
     },
     {
         id: 2,
@@ -39,7 +45,10 @@ export const hackathons: Hackathon[] = [
         status: "upcoming",
         format: "offline",
         image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        type: "hackathon"
+        type: "hackathon",
+        organizer: "Digital Event Group",
+        contacts: "+7 812 555-12-34, spb@deg.ru",
+        capacity: 140
     },
     {
         id: 3,
@@ -53,6 +62,9 @@ export const hackathons: Hackathon[] = [
         status: "active",
         format: "online",
         image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-        type: "hackathon"
+        type: "hackathon",
+        organizer: "Уральский IT-центр",
+        contacts: "+7 343 777-77-77, ural@itcenter.ru",
+        capacity: 250
     },
 ] 
