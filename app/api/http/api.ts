@@ -1,5 +1,10 @@
 import axios from 'axios';
 import { KEYCLOAK_BASE_CLIENT_URL } from '@/app/contants';
+import { config } from 'process';
+import { getSession } from 'next-auth/react';
+
+import { jwtDecode, JwtPayload } from 'jwt-decode';
+import { decode } from 'punycode';
 
 const nextAxios = axios.create({
   baseURL: process.env.NEXTAUTH_URL,
@@ -7,6 +12,24 @@ const nextAxios = axios.create({
 
 const keycloakAxios = axios.create({
   baseURL: KEYCLOAK_BASE_CLIENT_URL,
+});
+
+export const restAxios = axios.create({
+  // baseURL: process.env.API_URL,
+  baseURL: '//localhost:8000',
+});
+
+restAxios.interceptors.request.use(async (config) => {
+  const session = await getSession();
+
+  if (session && session.access_token) {
+    config.headers = config.headers || {};
+    config.headers['Authorization'] = `Bearer ${session.access_token}`;
+  }
+
+  return config;
+}, (error) => {
+  return Promise.reject(error);
 });
 
 export async function refreshAccessToken(refreshToken: string) {

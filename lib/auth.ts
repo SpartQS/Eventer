@@ -54,7 +54,8 @@ export const authOptions = {
       console.log('Resource access:', decoded.resource_access);
       console.log('FastAPI app roles:', decoded.resource_access?.['fastapi-app']?.roles);
 
-      session.access_token = encrypt(token.access_token);
+      // session.access_token = encrypt(token.access_token);
+      session.access_token = token.access_token;
       session.id_token = encrypt(token.id_token);
       session.role = decoded.resource_access?.['fastapi-app']?.roles?.[0] || '';
       session.error = token.error;
