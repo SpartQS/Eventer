@@ -10,6 +10,8 @@ import { ru } from "date-fns/locale"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import { RoleGuard } from "@/components/role-guard"
+import { useQuery } from "@tanstack/react-query"
+import { apiEvents } from "@/app/api/http/event/events"
 
 interface Event {
     id: number
@@ -20,54 +22,26 @@ interface Event {
     status: "active" | "upcoming" | "completed"
 }
 
-const events: Event[] = [
-    {
-        id: 1,
-        title: "Хакатон",
-        description: "Хакатон — это особый формат соревнования, где участники решают поставленную перед ними задачу за определенный срок. Качество и скорость выполнения задания — это два обязательных составляющих конкурса IT-специалистов.",
-        date: "3 декабря 2025 в 08:00",
-        type: "hackathon",
-        status: "upcoming"
-    },
-    {
-        id: 2,
-        title: "Алгоритмы",
-        description: "Соревнование по решению алгоритмических задач, где участники демонстрируют свои навыки в области структур данных и алгоритмов. Задачи различной сложности помогут проверить ваши знания и улучшить навыки программирования.",
-        date: "15 января 2026 в 10:00",
-        type: "algorithms",
-        status: "active"
-    },
-    {
-        id: 3,
-        title: "Web-разработка",
-        description: "Конкурс по созданию современных веб-приложений с использованием передовых технологий. Участники будут работать над реальными проектами и создавать инновационные решения для веб-платформ.",
-        date: "28 февраля 2026 в 09:00",
-        type: "web",
-        status: "upcoming"
-    },
-    {
-        id: 5,
-        title: "Мобильная разработка",
-        description: "Конкурс по разработке мобильных приложений для различных платформ. Участники создадут инновационные мобильные решения, используя современные технологии и фреймворки.",
-        date: "5 апреля 2026 в 09:30",
-        type: "mobile",
-        status: "active"
-    },
-    {
-        id: 6,
-        title: "Кибербезопасность",
-        description: "Соревнование по информационной безопасности, где участники будут решать задачи по защите систем, поиску уязвимостей и предотвращению кибератак. Практические кейсы от ведущих экспертов отрасли.",
-        date: "20 мая 2026 в 10:00",
-        type: "security",
-        status: "upcoming"
-    }
-]
-
 export default function MyEvents() {
     const router = useRouter()
     const [selectedType, setSelectedType] = useState<string>("all")
     const [selectedStatus, setSelectedStatus] = useState<string>("all")
     const [date, setDate] = useState<string>("")
+
+    const { data, isPending, error } = useQuery({
+        queryKey: ["my_events"],
+        queryFn: () => apiEvents.getMyEvents(),
+    })
+
+    const events = (data?.events || []).map((event) => ({
+        id: event.id,
+        title: event.event_name,
+        description: event.description,
+        date: new Date(event.start_date).toLocaleDateString("ru-RU", { day: "2-digit", month: "long", year: "numeric" }) +
+            " в " + new Date(event.start_date).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" }),
+        type: (event as any).category?.name || event.format || "hackathon",
+        status: event.event_status,
+    }))
 
     const parseEventDate = (dateStr: string) => {
         return parse(dateStr, "d MMMM yyyy 'в' HH:mm", new Date(), { locale: ru })
@@ -177,6 +151,13 @@ export default function MyEvents() {
         return matchesType && matchesStatus
     })
 
+    if (isPending) {
+        return <div className="p-8 text-center">Загрузка...</div>
+    }
+    if (error) {
+        return <div className="p-8 text-center text-red-500">Ошибка загрузки данных</div>
+    }
+
     return (
         <RoleGuard>
             <div className="min-h-screen bg-background">
@@ -235,23 +216,26 @@ export default function MyEvents() {
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            {filteredEvents.map((event) => (
-                                <Card key={event.id} className="bg-background border border-border flex flex-col justify-between p-5">
+                            {filteredEvents.map((event, idx) => (
+                                <Card key={event.id ?? idx} className="bg-background border border-border rounded-xl shadow-lg flex flex-col min-h-[260px] h-full p-5">
                                     <div className="flex flex-col flex-1">
                                         <div className="flex items-center justify-between mb-2">
-                                            <div className="flex items-center gap-4">
-                                                {getEventTypeIcon(event.type)}
-                                                <CardTitle className="text-base md:text-lg font-bold break-words line-clamp-1 mr-2">{event.title}</CardTitle>
+                                            <div className="flex items-center gap-4 min-w-[48px]">
+                                                <span className="flex items-center justify-center w-10 h-10">
+                                                    {getEventTypeIcon(event.type)}
+                                                </span>
+                                                <CardTitle className="text-base md:text-lg font-bold break-words line-clamp-2 mr-2 text-white max-w-[180px]">{event.title}</CardTitle>
                                             </div>
                                             {getStatusBadge(event.status)}
                                         </div>
                                         <div className="text-xs text-muted-foreground mb-2">{event.date}</div>
-                                        <div className="text-xs sm:text-sm text-muted-foreground break-words line-clamp-6 mb-1">{event.description}</div>
+                                        <div className="text-xs sm:text-sm text-gray-300 break-words line-clamp-3 mb-3">{event.description}</div>
+                                        <div className="flex-1" />
                                     </div>
                                     <CardFooter className="p-0 mt-1">
                                         <Button
                                             variant="outline"
-                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs sm:text-sm"
+                                            className="w-full border border-gray-500 bg-transparent text-white hover:bg-gray-800 hover:text-white text-sm rounded-lg font-bold"
                                             onClick={() => router.push(`/myevents/event/${event.id}`)}
                                         >
                                             Подробнее

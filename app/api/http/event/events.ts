@@ -51,6 +51,11 @@ export const apiEvents = {
   getEventDetail: async (id: number): Promise<Event> => {
     const res = await restAxios.get(`/api/events/${id}`);
     return res.data as Event;
+  },
+
+  getMyEvents: async (): Promise<{ events: Event[], total: number, count: number, offset: number }> => {
+    const res = await restAxios.get(`api/events/my/participations/?page=1&page_size=10`);
+    return res.data;
   }
 }
 
