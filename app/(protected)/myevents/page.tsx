@@ -234,25 +234,25 @@ export default function MyEvents() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {filteredEvents.map((event) => (
-                                <Card key={event.id} className="bg-background border border-border flex flex-col text-center p-4 justify-between min-h-[260px]">
-                                    <div className="flex flex-col items-center gap-2">
-                                        <CardHeader className="p-0">
-                                            <CardTitle className="text-base md:text-lg break-words line-clamp-1">{event.title}</CardTitle>
-                                        </CardHeader>
-                                        <CardContent className="p-0 flex flex-col items-center gap-3">
-                                            {getEventTypeIcon(event.type)}
-                                            <div className="text-xs text-muted-foreground">{getTypeTranslation(event.type)}</div>
-                                            <div className="text-xs sm:text-sm text-muted-foreground break-words pt-1">{event.date}</div>
+                                <Card key={event.id} className="bg-background border border-border flex flex-col justify-between p-5">
+                                    <div className="flex flex-col flex-1">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-4">
+                                                {getEventTypeIcon(event.type)}
+                                                <CardTitle className="text-base md:text-lg font-bold break-words line-clamp-1 mr-2">{event.title}</CardTitle>
+                                            </div>
                                             {getStatusBadge(event.status)}
-                                        </CardContent>
+                                        </div>
+                                        <div className="text-xs text-muted-foreground mb-2">{event.date}</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground break-words line-clamp-6 mb-1">{event.description}</div>
                                     </div>
-                                    <CardFooter className="p-0 pt-2">
+                                    <CardFooter className="p-0 mt-1">
                                         <Button
                                             variant="outline"
                                             className="w-full hover:bg-accent hover:text-accent-foreground text-xs sm:text-sm"
-                                            onClick={() => router.push(`/eventdetails/${event.id}`)}
+                                            onClick={() => router.push(`/myevents/event/${event.id}`)}
                                         >
                                             Подробнее
                                         </Button>
