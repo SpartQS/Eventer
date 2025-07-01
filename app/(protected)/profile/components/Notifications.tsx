@@ -14,6 +14,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useState } from "react";
 
 interface NotificationItem {
     id: number
@@ -24,7 +25,7 @@ interface NotificationItem {
 }
 
 export function Notifications() {
-    const notifications: NotificationItem[] = [
+    const [notifications, setNotifications] = useState<NotificationItem[]>([
         {
             id: 1,
             message: "Команда Horizon приглашает вас присоединиться к хакатону",
@@ -39,14 +40,16 @@ export function Notifications() {
             inviter: "Fly",
             event: "Киберспорт",
         },
-    ]
+    ])
 
     const handleAccept = (id: number) => {
         console.log(`Accepted invitation ${id}`)
+        setNotifications((prev) => prev.filter((n) => n.id !== id))
     }
 
     const handleDecline = (id: number) => {
         console.log(`Declined invitation ${id}`)
+        setNotifications((prev) => prev.filter((n) => n.id !== id))
     }
 
     return (

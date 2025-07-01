@@ -9,6 +9,8 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { useSession } from "next-auth/react"
+import { useQuery } from "@tanstack/react-query";
+import { apiUsers, TopCategoriesResponse } from "@/app/api/http/users/users";
 
 const STATS = [
     {
@@ -40,10 +42,19 @@ export function ProfileCard() {
         return <div>Пользователь не авторизован</div>
     }
 
+    const {data: categories, error, isPending } = useQuery<TopCategoriesResponse>({
+        queryKey: ['events'],
+        queryFn: () => apiUsers.getTopCategories()
+    })
+
+    console.log(categories)
+    if (error) {
+        return <div>Не найдено мероприятий</div>
+    }
+
     const info: ProfileInfo[] = [
         { label: "ID", value: session.user_id || '' },
         { label: "Роль", value: session.role || '' },
-        { label: "Статус", value: "Активен" },
         { label: "Email", value: session.user?.email || '' },
     ]
 
@@ -99,11 +110,11 @@ export function ProfileCard() {
                 <div className="px-4 sm:px-6 py-4">
                     <h3 className="text-lg md:text-xl font-medium mb-4 text-foreground">Участвовал</h3>
                     <div className="flex flex-row justify-between gap-4 md:gap-2">
-                        {STATS.map((stat, index) => (
+                        {categories && categories['top-categories'].map((stat, index) => (
                             <div key={index} className="flex flex-col items-center">
-                                <div className="mb-2 text-muted-foreground">{stat.icon}</div>
-                                <span className="text-base text-muted-foreground truncate">{stat.label}</span>
-                                <span className="text-lg font-bold text-foreground">{stat.value}</span>
+                                <div className="mb-2 text-muted-foreground"><Cpu className="size-7" /></div>
+                                <span className="text-base text-muted-foreground truncate">{stat.category.category_name}</span>
+                                <span className="text-lg font-bold text-foreground">{stat.count}</span>
                             </div>
                         ))}
                     </div>
@@ -115,13 +126,7 @@ export function ProfileCard() {
                         {info.map((item, index) => (
                             <div key={index} className="flex items-center">
                                 <span className="text-base text-muted-foreground w-24 shrink-0">{item.label}:</span>
-                                {item.label === "Статус" ? (
-                                    <Badge variant="secondary" className="text-base bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 hover:bg-green-100 dark:hover:bg-green-900">
-                                        {item.value}
-                                    </Badge>
-                                ) : (
-                                    <span className="text-base text-foreground ml-2">{item.value}</span>
-                                )}
+                                <span className="text-base text-foreground ml-2">{item.value}</span>
                             </div>
                         ))}
                     </div>

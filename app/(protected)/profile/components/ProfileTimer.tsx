@@ -3,147 +3,86 @@
 import * as React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Clock, ArrowLeftRight } from "lucide-react"
-
-interface TimerConfig {
-    duration: number
-    label: string
-    title: string
-}
-
-const TIMER_STATES_KEY = 'timer_states'
-const CURRENT_TIMER_KEY = 'current_timer_index'
-const LAST_UPDATE_KEY = 'last_update_time'
+import { apiUsers } from "@/app/api/http/users/users";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 export function ProfileTimer() {
-    const timers: TimerConfig[] = [
-        {
-            duration: 40 * 40,
-            label: "Время работы",
-            title: "Текущий ивент Хакатон"
-        },
-        {
-            duration: 45 * 60,
-            label: "Время отдыха",
-            title: "Текущий ивент Алгоритмы"
-        }
-    ]
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [countdown, setCountdown] = useState<string>('');
 
-    const channelRef = React.useRef<BroadcastChannel | null>(null)
-    const intervalRef = React.useRef<NodeJS.Timeout | null>(null)
+    const { data: stages, error, isPending } = useQuery({
+        queryKey: ['stages'],
+        queryFn: () => apiUsers.getUpcomingStages(),
+    });
 
-    const [currentTimerIndex, setCurrentTimerIndex] = React.useState(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem(CURRENT_TIMER_KEY)
-            return saved ? parseInt(saved, 10) : 0
-        }
-        return 0
-    })
+    const currentStage = stages?.stages[currentIndex]; 
 
-    const [timerStates, setTimerStates] = React.useState<number[]>(() => {
-        if (typeof window !== 'undefined') {
-            const savedTimers = localStorage.getItem(TIMER_STATES_KEY)
-            const lastUpdate = localStorage.getItem(LAST_UPDATE_KEY)
+    useEffect(() => {
+        if (!currentStage) return;
 
-            if (savedTimers && lastUpdate) {
-                const timersData = JSON.parse(savedTimers)
-                const timePassed = Math.floor((Date.now() - parseInt(lastUpdate, 10)) / 1000)
-                return timersData.map((time: number) => Math.max(0, time - timePassed))
-            }
-            return [timers[0].duration, timers[1].duration]
-        }
-        return [timers[0].duration, timers[1].duration]
-    })
+        const interval = setInterval(() => {
+            setCountdown(formatTimeDifference(currentStage.start_date));
+        }, 1000);
 
-    const resetTimer = (index: number) => {
-        setTimerStates((prev: number[]) => {
-            const newStates = [...prev]
-            newStates[index] = timers[index].duration
-            localStorage.setItem(TIMER_STATES_KEY, JSON.stringify(newStates))
-            localStorage.setItem(LAST_UPDATE_KEY, Date.now().toString())
-            return newStates
-        })
+        return () => clearInterval(interval);
+    }, [currentStage]);
+
+    function parseDate(dateStr: string): Date {
+        const [datePart, timePart] = dateStr.split(' ');
+        const [day, month, year] = datePart.split('.').map(Number);
+        const [hours, minutes, seconds] = timePart.split(':').map(Number);
+        return new Date(year, month - 1, day, hours, minutes, seconds);
     }
 
-    const updateTimers = React.useCallback(() => {
-        setTimerStates((prev: number[]) => {
-            const newStates = prev.map((time: number, index: number) => {
-                const newTime = Math.max(0, time - 1)
-                if (newTime === 0) {
-                    return timers[index].duration
-                }
-                return newTime
-            })
-            localStorage.setItem(TIMER_STATES_KEY, JSON.stringify(newStates))
-            localStorage.setItem(LAST_UPDATE_KEY, Date.now().toString())
+    function formatTimeDifference(startDateStr: string): string {
+        const startDate = parseDate(startDateStr);
+        const now = new Date();
+        const diffMs = startDate.getTime() - now.getTime();
 
-            if (channelRef.current) {
-                channelRef.current.postMessage({
-                    type: 'TIMER_UPDATE',
-                    timers: newStates
-                })
-            }
+        if (isNaN(diffMs)) return 'Некорректная дата';
+        if (diffMs <= 0) return 'Уже началось';
 
-            return newStates
-        })
-    }, [timers])
+        const diffSeconds = Math.floor(diffMs / 1000);
+        const days = Math.floor(diffSeconds / (60 * 60 * 24));
+        const hours = Math.floor((diffSeconds % (60 * 60 * 24)) / 3600);
+        const minutes = Math.floor((diffSeconds % 3600) / 60);
+        const seconds = diffSeconds % 60;
 
-    React.useEffect(() => {
-        if (typeof window !== 'undefined') {
-            channelRef.current = new BroadcastChannel('timer_sync')
-
-            channelRef.current.onmessage = (event) => {
-                if (event.data.type === 'TIMER_UPDATE') {
-                    setTimerStates(event.data.timers)
-                }
-            }
-
-            intervalRef.current = setInterval(updateTimers, 1000)
-
-            return () => {
-                if (channelRef.current) {
-                    channelRef.current.close()
-                }
-                if (intervalRef.current) {
-                    clearInterval(intervalRef.current)
-                }
-            }
-        }
-    }, [updateTimers])
-
-    React.useEffect(() => {
-        localStorage.setItem(CURRENT_TIMER_KEY, currentTimerIndex.toString())
-    }, [currentTimerIndex])
-
-    React.useEffect(() => {
-        const handleVisibilityChange = () => {
-            if (document.visibilityState === 'visible') {
-                const savedTimers = localStorage.getItem(TIMER_STATES_KEY)
-                const lastUpdate = localStorage.getItem(LAST_UPDATE_KEY)
-
-                if (savedTimers && lastUpdate) {
-                    const timersData = JSON.parse(savedTimers)
-                    const timePassed = Math.floor((Date.now() - parseInt(lastUpdate, 10)) / 1000)
-                    const updatedTimers = timersData.map((time: number) => Math.max(0, time - timePassed))
-                    setTimerStates(updatedTimers)
-                }
-            }
-        }
-
-        document.addEventListener('visibilitychange', handleVisibilityChange)
-        return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
-    }, [])
-
-    const switchTimer = () => {
-        const nextIndex = (currentTimerIndex + 1) % timers.length
-        setCurrentTimerIndex(nextIndex)
+        return [
+            days > 0 ? `${days} д.` : '',
+            hours > 0 ? `${hours} ч.` : '',
+            `${minutes} м.`,
+            `${seconds} c.`,
+        ]
+            .filter(Boolean)
+            .join(' ');
     }
 
-    const formatTime = (seconds: number) => {
-        const hours = Math.floor(seconds / 3600)
-        const minutes = Math.floor((seconds % 3600) / 60)
-        const secs = seconds % 60
-        return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-    }
+    const handleNext = () => {
+        if (stages && currentIndex < stages.stages.length - 1) {
+            setCurrentIndex((prev) => prev + 1);
+        }
+    };
+
+    const handlePrev = () => {
+        if (currentIndex > 0) {
+            setCurrentIndex((prev) => prev - 1);
+        }
+    };
+
+    // if (error) return <div>Нет ближайших мероприятий</div>;
+    if (error) return <Card>
+        <CardContent className="flex flex-col justify-center items-center h-[calc(100%-60px)] space-y-3 md:space-y-4">
+            Нет найдено мероприятий
+        </CardContent>
+        </Card>;
+    if (!currentStage) return <Card>
+    <CardContent className="flex flex-col justify-center items-center h-[calc(100%-60px)] space-y-3 md:space-y-4">
+        Этап не найден
+    </CardContent>
+    </Card>;
+    // if (!currentStage) return <div>Этап не найден</div>;
 
     return (
         <Card className="bg-card text-card-foreground border-border h-[350px] md:h-[450px] flex-1 min-w-0">
@@ -154,27 +93,28 @@ export function ProfileTimer() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col justify-center items-center h-[calc(100%-60px)] space-y-3 md:space-y-4">
-                <div className="text-base md:text-lg font-medium text-foreground mb-2 text-center">
-                    {timers[currentTimerIndex].title}
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                    <div className="flex items-center gap-2 md:gap-4">
-                        <div className="text-3xl md:text-6xl font-mono font-bold">
-                            {formatTime(timerStates[currentTimerIndex])}
+                    <div className="text-base md:text-lg font-medium text-foreground mb-2 text-center">
+                        {currentStage?.title}
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex items-center gap-2 md:gap-4">
+                            <div className="text-2xl md:text-2xl font-mono font-bold">
+                                {countdown}
+                            </div>
+                            <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-all"></div>
                         </div>
-                        <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-all"></div>
+                        <div className="text-xs md:text-sm text-muted-foreground">
+                            Время до следующей стадии
+                        </div>
                     </div>
-                    <div className="text-xs md:text-sm text-muted-foreground">
-                        Время до следующей стадии
+                    <div style={{ marginTop: '1rem' }}>
+                        <button onClick={handlePrev} disabled={currentIndex === 0}>
+                        Назад
+                        </button>
+                        <button onClick={handleNext} disabled={currentIndex === (stages?.stages.length ?? 0) - 1} style={{ marginLeft: '1rem' }}>
+                        Далее
+                        </button>
                     </div>
-                </div>
-                <button
-                    onClick={switchTimer}
-                    className="flex items-center gap-2 text-xs md:text-sm text-primary hover:text-primary/80 transition-colors"
-                >
-                    <ArrowLeftRight className="h-4 w-4" />
-                    Сменить ивент
-                </button>
             </CardContent>
         </Card>
     )
