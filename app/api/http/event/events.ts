@@ -5,6 +5,17 @@ import { restAxios } from '../api';
 //     baseURL: '//localhost:8000',
 //   });
 
+export interface EventStage {
+  stage_name: string
+  description: string
+  type: string
+  users_on_stage: number
+  stage_status: string
+  id: number
+  start_date: string
+  end_date: string
+}
+
 export interface Event {
   id: number
   category_id: number
@@ -18,6 +29,7 @@ export interface Event {
   organizer_id: number
   users_count: number
   venue: string
+  stages: EventStage[]
 }
 
 export interface CurrentEvents {
@@ -32,13 +44,13 @@ export const apiEvents = {
   //   return await (res.data as Promise<Event[]>);
   // },
 
-  // getEvent: async (id: number) => {
-  //   const res = await restAxios.get(`/api/events/${id}`);
-  //   return await (res.data as Promise<Event>);
-  // },
-
   getCurrentEventsUser: async (): Promise<CurrentEvents[]> => {
     return (await restAxios.get(`/api/users/users/my/events/current`)).data
+  },
+
+  getEventDetail: async (id: number): Promise<Event> => {
+    const res = await restAxios.get(`/api/events/${id}`);
+    return res.data as Event;
   }
 }
 
