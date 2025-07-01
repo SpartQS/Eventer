@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -529,8 +530,16 @@ export default function HackathonBoard() {
                                             <p className="text-xs md:text-sm leading-relaxed">{hackathon.description}</p>
                                         </div>
 
-                                        <div className="flex justify-end">
-                                            <Button className="bg-green-600 hover:bg-green-700 text-white w-full md:w-auto">Подробнее</Button>
+                                        <div className="flex justify-between items-center mt-4">
+                                            <span className="text-sm text-gray-400">
+                                                <UsersIcon className="inline-block w-4 h-4 mr-1" />
+                                                {hackathon.participants} участников
+                                            </span>
+                                            <Button asChild>
+                                                <Link href={`/eventdetails/${hackathon.id}`}>
+                                                    Подробнее
+                                                </Link>
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </div>

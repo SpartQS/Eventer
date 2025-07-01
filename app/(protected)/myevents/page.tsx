@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, Laptop, BrainCircuit, Globe, Smartphone, Shield } from "lucide-react"
 import { parse, isValid } from "date-fns"
 import { ru } from "date-fns/locale"
 import { Badge } from "@/components/ui/badge"
@@ -127,6 +127,35 @@ export default function MyEvents() {
         }
     }
 
+    const getEventTypeIcon = (type: string) => {
+        const iconProps = { className: "w-12 h-12 text-muted-foreground" };
+        switch (type) {
+            case "hackathon":
+                return <Laptop {...iconProps} />;
+            case "algorithms":
+                return <BrainCircuit {...iconProps} />;
+            case "web":
+                return <Globe {...iconProps} />;
+            case "mobile":
+                return <Smartphone {...iconProps} />;
+            case "security":
+                return <Shield {...iconProps} />;
+            default:
+                return <Laptop {...iconProps} />;
+        }
+    };
+
+    const getTypeTranslation = (type: string) => {
+        switch (type) {
+            case "hackathon": return "Хакатон";
+            case "algorithms": return "Алгоритмы";
+            case "web": return "Web-разработка";
+            case "mobile": return "Mobile-разработка";
+            case "security": return "Кибербезопасность";
+            default: return "Мероприятие";
+        }
+    }
+
     const filteredEvents = events.filter(event => {
         const matchesType = selectedType === "all" || event.type === selectedType
         const matchesStatus = selectedStatus === "all" || event.status === selectedStatus
@@ -151,11 +180,11 @@ export default function MyEvents() {
     return (
         <RoleGuard>
             <div className="min-h-screen bg-background">
-                <div className="container mx-auto max-w-7xl">
-                    <div className="flex flex-col h-full p-8">
-                        <div className="flex flex-col gap-6 mb-8">
-                            <h1 className="text-2xl font-bold">Мои мероприятия</h1>
-                            <div className="flex flex-col sm:flex-row gap-4">
+                <div className="container mx-auto max-w-7xl px-2 sm:px-4 md:px-8">
+                    <div className="flex flex-col h-full p-2 sm:p-4 md:p-8">
+                        <div className="flex flex-col gap-4 sm:gap-6 mb-4 sm:mb-8">
+                            <h1 className="text-xl sm:text-2xl font-bold">Мои мероприятия</h1>
+                            <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
                                 <Select value={selectedType} onValueChange={setSelectedType}>
                                     <SelectTrigger className="w-[200px] bg-background">
                                         <SelectValue placeholder="Все мероприятия" />
@@ -205,28 +234,25 @@ export default function MyEvents() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {filteredEvents.map((event) => (
-                                <Card key={event.id} className="bg-background border border-border flex flex-col">
-                                    <CardHeader>
-                                        <div className="flex justify-between items-start">
-                                            <CardTitle className="text-xl">{event.title}</CardTitle>
+                                <Card key={event.id} className="bg-background border border-border flex flex-col justify-between p-5">
+                                    <div className="flex flex-col flex-1">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <div className="flex items-center gap-4">
+                                                {getEventTypeIcon(event.type)}
+                                                <CardTitle className="text-base md:text-lg font-bold break-words line-clamp-1 mr-2">{event.title}</CardTitle>
+                                            </div>
                                             {getStatusBadge(event.status)}
                                         </div>
-                                        <div className="text-sm text-muted-foreground">
-                                            {event.date}
-                                        </div>
-                                    </CardHeader>
-                                    <CardContent className="flex-1">
-                                        <p className="text-sm text-muted-foreground line-clamp-6">
-                                            {event.description}
-                                        </p>
-                                    </CardContent>
-                                    <CardFooter className="mt-auto">
+                                        <div className="text-xs text-muted-foreground mb-2">{event.date}</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground break-words line-clamp-6 mb-1">{event.description}</div>
+                                    </div>
+                                    <CardFooter className="p-0 mt-1">
                                         <Button
                                             variant="outline"
-                                            className="w-full hover:bg-accent hover:text-accent-foreground"
-                                            onClick={() => router.push(`/eventdetails/${event.id}`)}
+                                            className="w-full hover:bg-accent hover:text-accent-foreground text-xs sm:text-sm"
+                                            onClick={() => router.push(`/myevents/event/${event.id}`)}
                                         >
                                             Подробнее
                                         </Button>

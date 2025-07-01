@@ -10,7 +10,8 @@ import {
   Send,
   UserRound,
   PlusCircle,
-  ClipboardList
+  ClipboardList,
+  Users
 } from "lucide-react"
 
 import { NavProjects } from "@/components/nav-projects"
@@ -61,6 +62,11 @@ const data = {
       name: "Мои мероприятия",
       url: "/myevents",
       icon: GraduationCap,
+    },
+    {
+      name: "Команды",
+      url: "/teams",
+      icon: Users,
     },
     {
       name: "Создать мероприятие",
