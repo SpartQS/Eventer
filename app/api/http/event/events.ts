@@ -1,11 +1,22 @@
 import { restAxios } from '../api';
 
-export interface Category {
+// const nextAxios = axios.create({
+//     // baseURL: process.env.NEXTAUTH_URL,
+//     baseURL: '//localhost:8000',
+//   });
+
+export interface EventStage {
+  stage_name: string
+  description: string
+  type: string
+  users_on_stage: number
+  stage_status: string
   id: number
-  category_name: string
+  start_date: string
+  end_date: string
 }
 
-export interface Events {
+export interface Event {
   id: number
   event_name: string
   description: string
@@ -13,12 +24,7 @@ export interface Events {
   users_count: number
   format: string
   venue: string
-  start_date: string
-  end_date: string
-  event_status: string
-  orginizer_id: number
-  category_id: number
-  category: Category
+  stages: EventStage[]
 }
 
 export interface CurrentEvents {
@@ -35,16 +41,23 @@ type EventsResponse = {
 }
 
 export const apiEvents = {
-  getAllEvents: async (params?: {
-    page?: number
-    page_size?: number
-    venue?: string | null
-    date?: string | null
-    category?: string | null
-    format?: string | null
-    event_status?: string | null
-  }): Promise<EventsResponse> => {
-    return (await restAxios.get(`api/events`, {params })).data
+  // getEvents: async ({signal}: { signal: AbortSignal}) => {
+  //   const res = await restAxios.get(`/api/events`, { signal });
+  //   return await (res.data as Promise<Event[]>);
+  // },
+
+  getCurrentEventsUser: async (): Promise<CurrentEvents[]> => {
+    return (await restAxios.get(`/api/users/users/my/events/current`)).data
+  },
+
+  getEventDetail: async (id: number): Promise<Event> => {
+    const res = await restAxios.get(`/api/events/${id}`);
+    return res.data as Event;
+  },
+
+  getMyEvents: async (): Promise<{ events: Event[], total: number, count: number, offset: number }> => {
+    const res = await restAxios.get(`api/events/my/participations/?page=1&page_size=10`);
+    return res.data;
   }
 }
 
