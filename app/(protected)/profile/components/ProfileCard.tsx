@@ -113,7 +113,7 @@ export function ProfileCard() {
                         {categories && categories['top-categories'].map((stat, index) => (
                             <div key={index} className="flex flex-col items-center">
                                 <div className="mb-2 text-muted-foreground"><Cpu className="size-7" /></div>
-                                <span className="text-base text-muted-foreground truncate">{stat.category.category_name}</span>
+                                <span className="text-base text-muted-foreground truncate">{stat.category.name}</span>
                                 <span className="text-lg font-bold text-foreground">{stat.count}</span>
                             </div>
                         ))}

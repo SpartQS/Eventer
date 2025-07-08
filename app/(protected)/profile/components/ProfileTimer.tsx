@@ -33,6 +33,7 @@ export function ProfileTimer() {
         const [day, month, year] = datePart.split('.').map(Number);
         const [hours, minutes, seconds] = timePart.split(':').map(Number);
         return new Date(year, month - 1, day, hours, minutes, seconds);
+        // return `${year}-${month - 1}-${day - 1} ${hours}:${minutes}:${seconds}`;
     }
 
     function formatTimeDifference(startDateStr: string): string {
@@ -50,13 +51,13 @@ export function ProfileTimer() {
         const seconds = diffSeconds % 60;
 
         return [
-            days > 0 ? `${days} д.` : '',
-            hours > 0 ? `${hours} ч.` : '',
-            `${minutes} м.`,
-            `${seconds} c.`,
+            days > 0 ? `${days}:` : '00',
+            hours > 0 ? `${hours}:` : '00',
+            `${minutes}:`,
+            `${seconds}`,
         ]
             .filter(Boolean)
-            .join(' ');
+            .join('');
     }
 
     const handleNext = () => {
@@ -98,7 +99,7 @@ export function ProfileTimer() {
                     </div>
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex items-center gap-2 md:gap-4">
-                            <div className="text-2xl md:text-2xl font-mono font-bold">
+                            <div className="text-4xl md:text-4xl font-mono font-bold">
                                 {countdown}
                             </div>
                             <div className="w-2 h-2 md:w-3 md:h-3 rounded-full bg-green-500 animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)] transition-all"></div>

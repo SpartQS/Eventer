@@ -4,14 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { CalendarClock } from "lucide-react"
-// import { apiEventTeams } from "@/app/api/http/EventTeams/event_teams";
-import { apiEvents } from "@/app/api/http/event/events";
 import { useQuery } from "@tanstack/react-query";
+import { apiUsers } from "@/app/api/http/users/users";
 
 export function CurrentEvents() {
     const {data: events, error, isPending } = useQuery({
         queryKey: ['team_events'],
-        queryFn: () => apiEvents.getCurrentEventsUser()
+        queryFn: () => apiUsers.getCurrentEventsUser()
     })
 
     if (error) {
@@ -20,7 +19,6 @@ export function CurrentEvents() {
                 Нет текущих мероприятий
             </CardContent>
         </Card>
-        // return <div>Нет текущих мероприятий</div>
     } 
 
     if (isPending) {
@@ -29,7 +27,6 @@ export function CurrentEvents() {
             Нет текущих мероприятий
         </CardContent>
         </Card>
-    // return <div>Нет текущих мероприятий</div>
     }
 
     return (

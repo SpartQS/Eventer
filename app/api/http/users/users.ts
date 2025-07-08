@@ -15,6 +15,12 @@ type User = {
   city_id: number
 }
 
+export interface CurrentEvents {
+  team: string
+  event: string
+  stage: string
+}
+
 interface stage {
   event_id: number
   stage_id: number
@@ -28,7 +34,7 @@ interface upcomingstages {
 
 interface Category {
   id: number
-  category_name: string
+  name: string
 }
 
 interface TopCategoryItem {
@@ -47,6 +53,10 @@ export const apiUsers = {
 
   getTopCategories: async (): Promise<TopCategoriesResponse> => {
     return (await restAxios.get(`/api/users/my/top-categories`)).data
+  },
+
+  getCurrentEventsUser: async (): Promise<CurrentEvents[]> => {
+    return (await restAxios.get(`/api/users/my/events/current`)).data
   }
 }
 

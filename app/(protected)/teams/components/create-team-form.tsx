@@ -10,49 +10,43 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { UploadIcon, UsersIcon, CheckIcon } from "lucide-react"
 import { toast } from "sonner"
+import { apiTeams, CreateTeam, CreateTeamResponse } from "@/app/api/http/teams/teams"
+import { useMutation } from "@tanstack/react-query"
 
-interface CreateTeamFormProps {
-    onTeamCreated: () => void
-}
+export default function CreateTeamForm() {
+    const [teamData, setTeamData] = useState<CreateTeam>({
+        team_name: '',
+        logo: '',
+        description: '',
+      });
 
-export default function CreateTeamForm({ onTeamCreated }: CreateTeamFormProps) {
-    const [formData, setFormData] = useState({
-        name: "",
-        description: "",
-        maxMembers: "4",
-        avatar: null as File | null
+    const [showSuccess, setShowSuccess] = useState(false);
+
+    const CreateTeamMutation = useMutation<CreateTeamResponse, Error, CreateTeam>({
+        mutationFn: apiTeams.createTeam,
+        onSuccess: () => {
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 3000); // Убрать через 3 сек
+            setTeamData({ team_name: '', logo: '', description: '' });
+        },
+        onError: () => {
+            alert("Ошибка при создании команды.");
+        }
     })
-    const [avatarPreview, setAvatarPreview] = useState<string>("")
-    const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]
-        if (file) {
-            setFormData(prev => ({ ...prev, avatar: file }))
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                setAvatarPreview(e.target?.result as string)
-            }
-            reader.readAsDataURL(file)
-        }
-    }
+    
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        CreateTeamMutation.mutate(teamData);
+      };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsSubmitting(true)
-
-        try {
-            // Здесь будет API запрос для создания команды
-            await new Promise(resolve => setTimeout(resolve, 1000)) // Имитация API
-
-            toast.success("Команда успешно создана!")
-            onTeamCreated()
-        } catch (error) {
-            toast.error("Ошибка при создании команды")
-        } finally {
-            setIsSubmitting(false)
-        }
-    }
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setTeamData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+    };
 
     return (
         <div className="max-w-2xl mx-auto">
@@ -64,8 +58,23 @@ export default function CreateTeamForm({ onTeamCreated }: CreateTeamFormProps) {
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
+                {showSuccess && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 20,
+                        right: 20,
+                        background: '#4BB543',
+                        color: 'white',
+                        padding: '12px 20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                        zIndex: 9999
+                    }}>
+                        ✅ Команда успешно создана!
+                    </div>
+                    )}
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        {/* Аватар команды */}
+                        {/* Аватар команды
                         <div className="space-y-2">
                             <Label>Аватар команды</Label>
                             <div className="flex items-center gap-4">
@@ -91,15 +100,29 @@ export default function CreateTeamForm({ onTeamCreated }: CreateTeamFormProps) {
                                     </Label>
                                 </div>
                             </div>
+                        </div> */}
+
+                        {/* Аватар команды ТОЛЬКО ПО URL */}
+                        <div className="space-y-2">
+                            <Label htmlFor="logo">Аватар команды *</Label>
+                            <Input
+                                name="logo"
+                                type="text"
+                                value={teamData.logo}
+                                onChange={handleChange}
+                                placeholder="Введите url аватара"
+                                required
+                            />
                         </div>
 
                         {/* Название команды */}
                         <div className="space-y-2">
-                            <Label htmlFor="name">Название команды *</Label>
+                            <Label htmlFor="team_name">Название команды *</Label>
                             <Input
-                                id="name"
-                                value={formData.name}
-                                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                name="team_name"
+                                type="text"
+                                value={teamData.team_name}
+                                onChange={handleChange}
                                 placeholder="Введите название команды"
                                 required
                             />
@@ -107,41 +130,24 @@ export default function CreateTeamForm({ onTeamCreated }: CreateTeamFormProps) {
 
                         {/* Описание */}
                         <div className="space-y-2">
-                            <Label htmlFor="description">Описание команды</Label>
+                            <Label htmlFor="description">Описание команды *</Label>
                             <Textarea
-                                id="description"
-                                value={formData.description}
-                                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                                name="description"
+                                value={teamData.description}
+                                onChange={handleChange}
                                 placeholder="Расскажите о вашей команде, целях и опыте..."
                                 rows={4}
                             />
-                        </div>
-
-                        {/* Максимальное количество участников */}
-                        <div className="space-y-2">
-                            <Label htmlFor="maxMembers">Максимальное количество участников</Label>
-                            <Select value={formData.maxMembers} onValueChange={(value) => setFormData(prev => ({ ...prev, maxMembers: value }))}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="2">2 участника</SelectItem>
-                                    <SelectItem value="3">3 участника</SelectItem>
-                                    <SelectItem value="4">4 участника</SelectItem>
-                                    <SelectItem value="5">5 участников</SelectItem>
-                                    <SelectItem value="6">6 участников</SelectItem>
-                                </SelectContent>
-                            </Select>
                         </div>
 
                         {/* Кнопка создания */}
                         <div className="flex justify-end">
                             <Button
                                 type="submit"
-                                disabled={isSubmitting || !formData.name.trim()}
+                                disabled={CreateTeamMutation.isPending}
                                 className="min-w-[140px]"
                             >
-                                {isSubmitting ? (
+                                {CreateTeamMutation.isPending ? (
                                     <div className="flex items-center gap-2">
                                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                                         Создание...
