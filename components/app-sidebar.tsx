@@ -25,6 +25,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger
 } from "@/components/ui/sidebar"
 import { useSession } from "next-auth/react"
 import { ROLES } from "@/app/config/roles"
@@ -97,29 +98,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     );
   }
   return (
-    <Sidebar variant="inset" className="transition-all duration-200 ease-linear" {...props}>
+    <Sidebar variant="inset" collapsible="icon" className="transition-all duration-200 ease-linear" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground overflow-hidden">
-                  <Image
-                    src="/logo.png"
-                    alt="Logo"
-                    width={32}
-                    height={32}
-                    className="size-full object-cover"
-                  />
+                <div className="flex items-center justify-center rounded-full bg-gray-200 font-bold text-xl mx-auto my-2 w-10 h-10 min-w-[40px] min-h-[40px] group-data-[state=collapsed]/sidebar:w-6 group-data-[state=collapsed]/sidebar:h-6 group-data-[state=collapsed]/sidebar:min-w-[24px] group-data-[state=collapsed]/sidebar:min-h-[24px] group-data-[state=collapsed]/sidebar:text-base overflow-visible">
+                  U
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">Eventer</span>
-                  <span className="truncate text-xs">КИПУ</span>
+                  <span className="truncate text-xs">Eventer</span>
                 </div>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+        {/* Удалена дублирующая кнопка SidebarTrigger */}
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={filteredProjects} />

@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { MoreHorizontal, type LucideIcon } from "lucide-react"
+import { usePathname } from "next/navigation"
 
 import {
   SidebarGroup,
@@ -21,15 +22,21 @@ export function NavProjects({
     icon: LucideIcon
   }[]
 }) {
-  const { isMobile, setOpenMobile } = useSidebar()
+  const { isMobile, setOpenMobile, state } = useSidebar()
+  const pathname = usePathname()
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup>
       <SidebarGroupLabel className="text-lg font-medium">Основное</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild size="lg">
+            <SidebarMenuButton
+              asChild
+              size="lg"
+              isActive={pathname.startsWith(item.url)}
+              className={state === "collapsed" ? "justify-center px-0" : ""}
+            >
               <Link
                 href={item.url}
                 onClick={() => {
@@ -37,15 +44,15 @@ export function NavProjects({
                 }}
               >
                 <item.icon />
-                <span className="text-base">{item.name}</span>
+                {state === "expanded" && <span className="text-base">{item.name}</span>}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton size="lg">
+          <SidebarMenuButton size="lg" className={state === "collapsed" ? "justify-center px-0" : ""}>
             <MoreHorizontal />
-            <span className="text-base">Больше</span>
+            {state === "expanded" && <span className="text-base">Больше</span>}
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
