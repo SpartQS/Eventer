@@ -8,17 +8,13 @@ export default function Home() {
     <div className="background">
       <div className="container">
         <div className="content">
-          <div className="logo-container">
-            <Image
-              src={logo}
-              alt="КИПУ Логотип"
-              className="logo"
-              width={200}
-              height={100}
-            />
+          <div className="logo-container flex items-center justify-center">
+            <div className="w-[100px] h-[100px] rounded-full bg-gray-200 font-bold text-5xl text-gray-700 flex items-center justify-center">
+              U
+            </div>
           </div>
 
-          <h1 className="title">КИПУ</h1>
+          <h1 className="title">Eventer</h1>
 
           <p className="subtitle">
             Eventer — удобный сервис для<br />
