@@ -1,41 +1,53 @@
 import { restAxios } from '../api';
 
-type Event = {
-  //
+export interface JoinTeam {
+  event_id: number;
+  invite_token: string;
 }
 
-export interface TeamWithEvent {
-  event_name: string;
-  team: Team;
+export interface CreateTeam {
+  event_id: number;
+  name: string;
 }
 
-export interface TeamMember {
-  user_id: number;
-  is_leader: boolean;
-  is_active: boolean;
+interface TeamMember {
+  firstname: string;
+  lastname: string;
+  is_event_leader: boolean;
 }
 
-export interface Team {
-  id: number;
-  team_name: string;
-  logo: string;
-  description: string;
+interface Team {
+  name: string;
+  status: 'pending' | 'approved' | 'rejected'; 
+  created_at: string; 
   members: TeamMember[];
 }
 
+interface TeamsResponse {
+  teams: Team[];
+}
+
 export const apiEventTeams = {
-  // getEvents: async ({signal}: { signal: AbortSignal}) => {
-  //   const res = await nextAxios.get(`/api/events`, { signal });
-  //   return await (res.data as Promise<Event[]>);
+  getEventTeam: async (event_id: number) => {
+    return (await restAxios.get(`api/events/${event_id}/event-teams/my`)).data
+  },
+  createTeam: async (event_id: number, name: string) => {
+    return (await restAxios.post(`/api/events/${event_id}/event-teams`, {name})).data;
+  },
+  joinTeam: async (event_id: number, invite_token: string) => {
+    return (await restAxios.post(`/api/events/${event_id}/event-teams/join/${invite_token}`)).data;
+  },
+  getEventTeams: async (event_id: number, page?: number, page_size?: number): Promise<TeamsResponse> => {
+    return (await restAxios.get(`/api/events/${event_id}/event-teams`)).data;
+  },
+
+  // getEventsTeams: async (params?: {
+  //   event_id: number
+  //   page?: number
+  //   page_size?: number
+  // }): Promise<TeamsResponse> => {
+  //   return (await restAxios.get(`/api/events/${params?.event_id}/event-teams`, {params })).data
   // },
 
-  // getEvent: async (id: number) => {
-  //   const res = await nextAxios.get(`/api/events/${id}`);
-  //   return await (res.data as Promise<Event>);
-  // }
-
-  getUserInActiveEvent: async (user_id: number): Promise<TeamWithEvent[]> => {
-    return (await restAxios.get(`/api/teams/get_user_team_in_active_event/${user_id}`)).data
-  }
 }
 

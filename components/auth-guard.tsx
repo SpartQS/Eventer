@@ -10,7 +10,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (status === "unauthenticated") {
+            // console.log('unauth')
             router.push("/")
+            // router.push("//localhost:3000/profile")
         }
     }, [status, router])
 

@@ -13,7 +13,8 @@ export const authOptions = {
   providers: [KeycloakProvider(keycloakProviderOptions)],
 
   pages: {
-    signIn: '/login',
+    // signIn: '/login',
+    signIn: '/',
   },
 
   callbacks: {

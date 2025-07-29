@@ -7,18 +7,28 @@ export default withAuth(
     },
     {
         callbacks: {
-            authorized: ({ token }) => !!token
+            authorized: ({ token }) => !!token,
         },
+
+        pages: {
+            signIn: "/",
+            // error: "/error",
+          },
     }
 )
 
 export const config = {
     matcher: [
-        "/profile/:path*",
-        "/dashboard/:path*",
-        "/events/:path*",
-        "/my-events/:path*",
-        "/create-event/:path*",
-        "/certificates/:path*"
+        // "/((?!^allevents$|^eventdetails/\\d+$).*)"
+        // "/((?!allevents|eventdetails).*)"
+        "/((?!allevents$|eventdetails/\\d+$|^api|^_next|.*\\..*$).*)"
+        // "/allevents"
+        // "/profile/:path*",
+        // "/allavents/:path*",
+        // "/dashboard/:path*",
+        // "/events/:path*",
+        // "/my-events/:path*",
+        // "/create-event/:path*",
+        // "/certificates/:path*"
     ]
 } 

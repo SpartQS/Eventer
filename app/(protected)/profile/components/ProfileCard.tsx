@@ -49,7 +49,8 @@ export function ProfileCard() {
 
     console.log(categories)
     if (error) {
-        return <div>Не найдено мероприятий</div>
+        console.log(error)
+        // return <div>Не найдено мероприятий</div>
     }
 
     const info: ProfileInfo[] = [

@@ -30,8 +30,8 @@ export default function CreateTeamForm() {
             setTeamData({ team_name: '', logo: '', description: '' });
         },
         onError: () => {
-            alert("Ошибка при создании команды.");
-        }
+            toast.error("Ошибка при создании команды");
+          }
     })
 
     
