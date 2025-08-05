@@ -42,7 +42,7 @@ export function ProfileCard() {
         return <div>Пользователь не авторизован</div>
     }
 
-    const {data: categories, error, isPending } = useQuery<TopCategoriesResponse>({
+    const { data: categories, error, isPending } = useQuery<TopCategoriesResponse>({
         queryKey: ['events'],
         queryFn: () => apiUsers.getTopCategories()
     })
@@ -81,7 +81,7 @@ export function ProfileCard() {
             <CardHeader className="flex flex-row items-center gap-4 p-4 sm:p-6 justify-between">
                 <Avatar className="h-20 w-20 md:h-24 md:w-24 rounded-full border-2 border-border shrink-0">
                     <AvatarImage
-                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(session.user?.name || '')}&background=random`}
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(session.user?.name || '')}&background=6366f1&size=96&color=fff&bold=true`}
                         alt="Profile picture"
                     />
                 </Avatar>

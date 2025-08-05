@@ -81,7 +81,7 @@ export default function HackathonBoard() {
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
         const seconds = date.getUTCSeconds();
-        
+
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
     }
 
@@ -94,7 +94,7 @@ export default function HackathonBoard() {
         format: '',
         event_status: 'active',
         name: '',
-      }
+    }
 
     const [filters, setFilters] = useState({
         page: 1,
@@ -118,7 +118,7 @@ export default function HackathonBoard() {
         event_status: filters.event_status || undefined,
         name: filters.name || undefined,
     }
-    
+
     const { data, isPending, error } = useQuery({
         queryKey: ['Events', normalizedFilters],
         queryFn: () => apiEvents.getAllEvents(normalizedFilters),
@@ -126,7 +126,7 @@ export default function HackathonBoard() {
     })
 
     const events = data?.events ?? []
-    
+
 
     return (
         <div className="flex flex-col md:flex-row">
@@ -147,117 +147,117 @@ export default function HackathonBoard() {
                         </DialogClose>
                     </DialogHeader>
                     <div className="space-y-6">
-                    <Separator />
-                    {/* Venue */}
-                    <div className="space-y-2">
-                        <Label htmlFor="venue">Место проведения</Label>
-                        <Input
-                        id="venue"
-                        value={tempFilters.venue}
-                        onChange={(e) => setTempFilters((prev) => ({ ...prev, venue: e.target.value, page: 1 }))}
-                        placeholder="Введите место"
-                        />
-                    </div>
-
-                    <Separator />
-
-                     {/* Date */}
-                    <div className="space-y-2">
-                        <Label htmlFor="date">Дата</Label>
-                        <div className="relative">
+                        <Separator />
+                        {/* Venue */}
+                        <div className="space-y-2">
+                            <Label htmlFor="venue">Место проведения</Label>
                             <Input
-                            id="date"
-                            type="text"
-                            placeholder="ДД.ММ.ГГГГ"
-                            value={tempFilters.date}
-                            onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value, page: 1 }))}
+                                id="venue"
+                                value={tempFilters.venue}
+                                onChange={(e) => setTempFilters((prev) => ({ ...prev, venue: e.target.value, page: 1 }))}
+                                placeholder="Введите место"
                             />
-                            <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
-                    </div>
 
-                    <Separator />
+                        <Separator />
 
-                    {/* Category */}
-                    <div className="space-y-2">
-                    <Label htmlFor="category-select">Категория</Label>
-                    <Select
-                        value={tempFilters.category}
-                        onValueChange={(value) => setTempFilters((prev) => ({  ...prev, category: value, page: 1, }))}
-                    >
-                        <SelectTrigger id="category-select">
-                            <SelectValue placeholder="Все категории" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {/* <SelectItem value="">Все категории</SelectItem> */}
-                            <SelectItem value="1">Искусство</SelectItem>
-                            <SelectItem value="2">Технологии</SelectItem>
-                            <SelectItem value="3">Образование</SelectItem>
-                            <SelectItem value="4">Киберспорт</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    </div>
+                        {/* Date */}
+                        <div className="space-y-2">
+                            <Label htmlFor="date">Дата</Label>
+                            <div className="relative">
+                                <Input
+                                    id="date"
+                                    type="text"
+                                    placeholder="ДД.ММ.ГГГГ"
+                                    value={tempFilters.date}
+                                    onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value, page: 1 }))}
+                                />
+                                <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            </div>
+                        </div>
 
-                    <Separator />
+                        <Separator />
 
-                    {/* Format */}
-                    <div className="space-y-2">
-                        <Label htmlFor="format">Формат</Label>
-                        <Select
-                        value={tempFilters.format}
-                        onValueChange={(value) => setTempFilters((prev) => ({ ...prev, format: value, page: 1 }))}
-                        >
-                        <SelectTrigger id="format">
-                            <SelectValue placeholder="Выберите формат" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="online">Онлайн</SelectItem>
-                            <SelectItem value="offline">Оффлайн</SelectItem>
-                            <SelectItem value="hybrid">Гибрид</SelectItem>
-                        </SelectContent>
-                        </Select>
-                    </div>
+                        {/* Category */}
+                        <div className="space-y-2">
+                            <Label htmlFor="category-select">Категория</Label>
+                            <Select
+                                value={tempFilters.category}
+                                onValueChange={(value) => setTempFilters((prev) => ({ ...prev, category: value, page: 1, }))}
+                            >
+                                <SelectTrigger id="category-select">
+                                    <SelectValue placeholder="Все категории" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {/* <SelectItem value="">Все категории</SelectItem> */}
+                                    <SelectItem value="1">Искусство</SelectItem>
+                                    <SelectItem value="2">Технологии</SelectItem>
+                                    <SelectItem value="3">Образование</SelectItem>
+                                    <SelectItem value="4">Киберспорт</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                    <Separator />
+                        <Separator />
 
-                    {/* Event Status */}
-                    <div className="space-y-2">
-                        <Label htmlFor="event_status">Статус</Label>
-                        <Select
-                        value={tempFilters.event_status}
-                        onValueChange={(value) => setTempFilters((prev) => ({ ...prev, event_status: value, page: 1 }))}
-                        >
-                        <SelectTrigger id="event_status">
-                            <SelectValue placeholder="Выберите статус" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="active">Активные</SelectItem>
-                            <SelectItem value="waiting">Предстоящие</SelectItem>
-                            <SelectItem value="closed">Завершённые</SelectItem>
-                        </SelectContent>
-                        </Select>
-                    </div>
+                        {/* Format */}
+                        <div className="space-y-2">
+                            <Label htmlFor="format">Формат</Label>
+                            <Select
+                                value={tempFilters.format}
+                                onValueChange={(value) => setTempFilters((prev) => ({ ...prev, format: value, page: 1 }))}
+                            >
+                                <SelectTrigger id="format">
+                                    <SelectValue placeholder="Выберите формат" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="online">Онлайн</SelectItem>
+                                    <SelectItem value="offline">Оффлайн</SelectItem>
+                                    <SelectItem value="hybrid">Гибрид</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                    <Separator />
+                        <Separator />
 
-                    <div className="flex gap-2">
-                        <Button
-                            onClick={() => setFilters({ ...tempFilters, page: 1 })}
-                            className="flex-1"
-                        >
-                            Применить
-                        </Button>
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                            setFilters(initialFilters)
-                            setTempFilters(initialFilters)
-                            }}
-                            className="flex-1"
-                        >
-                            Очистить
-                        </Button>
-                    </div>
+                        {/* Event Status */}
+                        <div className="space-y-2">
+                            <Label htmlFor="event_status">Статус</Label>
+                            <Select
+                                value={tempFilters.event_status}
+                                onValueChange={(value) => setTempFilters((prev) => ({ ...prev, event_status: value, page: 1 }))}
+                            >
+                                <SelectTrigger id="event_status">
+                                    <SelectValue placeholder="Выберите статус" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="active">Активные</SelectItem>
+                                    <SelectItem value="waiting">Предстоящие</SelectItem>
+                                    <SelectItem value="closed">Завершённые</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <Separator />
+
+                        <div className="flex gap-2">
+                            <Button
+                                onClick={() => setFilters({ ...tempFilters, page: 1 })}
+                                className="flex-1"
+                            >
+                                Применить
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    setFilters(initialFilters)
+                                    setTempFilters(initialFilters)
+                                }}
+                                className="flex-1"
+                            >
+                                Очистить
+                            </Button>
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
@@ -270,14 +270,14 @@ export default function HackathonBoard() {
                 <CardContent className="space-y-6">
                     {/* Name */}
                     <div className="space-y-2">
-                    <Label htmlFor="date">Название</Label>
-                    <div className="relative">
+                        <Label htmlFor="date">Название</Label>
+                        <div className="relative">
                             <Input
-                            id="date"
-                            type="text"
-                            placeholder="Название"
-                            value={tempFilters.name}
-                            onChange={(e) => setTempFilters((prev) => ({ ...prev, name: e.target.value, page: 1 }))}
+                                id="date"
+                                type="text"
+                                placeholder="Название"
+                                value={tempFilters.name}
+                                onChange={(e) => setTempFilters((prev) => ({ ...prev, name: e.target.value, page: 1 }))}
                             />
                             <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
@@ -288,25 +288,25 @@ export default function HackathonBoard() {
                     <div className="space-y-2">
                         <Label htmlFor="venue">Место проведения</Label>
                         <Input
-                        id="venue"
-                        value={tempFilters.venue}
-                        onChange={(e) => setTempFilters((prev) => ({ ...prev, venue: e.target.value, page: 1 }))}
-                        placeholder="Введите место"
+                            id="venue"
+                            value={tempFilters.venue}
+                            onChange={(e) => setTempFilters((prev) => ({ ...prev, venue: e.target.value, page: 1 }))}
+                            placeholder="Введите место"
                         />
                     </div>
 
                     <Separator />
 
-                     {/* Date */}
+                    {/* Date */}
                     <div className="space-y-2">
                         <Label htmlFor="date">Дата</Label>
                         <div className="relative">
                             <Input
-                            id="date"
-                            type="text"
-                            placeholder="ДД.ММ.ГГГГ"
-                            value={tempFilters.date}
-                            onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value, page: 1 }))}
+                                id="date"
+                                type="text"
+                                placeholder="ДД.ММ.ГГГГ"
+                                value={tempFilters.date}
+                                onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value, page: 1 }))}
                             />
                             <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         </div>
@@ -316,22 +316,22 @@ export default function HackathonBoard() {
 
                     {/* Category */}
                     <div className="space-y-2">
-                    <Label htmlFor="category-select">Категория</Label>
-                    <Select
-                        value={tempFilters.category}
-                        onValueChange={(value) => setTempFilters((prev) => ({  ...prev, category: value, page: 1, }))}
-                    >
-                        <SelectTrigger id="category-select">
-                            <SelectValue placeholder="Все категории" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {/* <SelectItem value="">Все категории</SelectItem> */}
-                            <SelectItem value="1">Искусство</SelectItem>
-                            <SelectItem value="2">Технологии</SelectItem>
-                            <SelectItem value="3">Образование</SelectItem>
-                            <SelectItem value="4">Киберспорт</SelectItem>
-                        </SelectContent>
-                    </Select>
+                        <Label htmlFor="category-select">Категория</Label>
+                        <Select
+                            value={tempFilters.category}
+                            onValueChange={(value) => setTempFilters((prev) => ({ ...prev, category: value, page: 1, }))}
+                        >
+                            <SelectTrigger id="category-select">
+                                <SelectValue placeholder="Все категории" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {/* <SelectItem value="">Все категории</SelectItem> */}
+                                <SelectItem value="1">Искусство</SelectItem>
+                                <SelectItem value="2">Технологии</SelectItem>
+                                <SelectItem value="3">Образование</SelectItem>
+                                <SelectItem value="4">Киберспорт</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
 
                     <Separator />
@@ -340,17 +340,17 @@ export default function HackathonBoard() {
                     <div className="space-y-2">
                         <Label htmlFor="format">Формат</Label>
                         <Select
-                        value={tempFilters.format}
-                        onValueChange={(value) => setTempFilters((prev) => ({ ...prev, format: value, page: 1 }))}
+                            value={tempFilters.format}
+                            onValueChange={(value) => setTempFilters((prev) => ({ ...prev, format: value, page: 1 }))}
                         >
-                        <SelectTrigger id="format">
-                            <SelectValue placeholder="Выберите формат" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="online">Онлайн</SelectItem>
-                            <SelectItem value="offline">Оффлайн</SelectItem>
-                            <SelectItem value="hybrid">Гибрид</SelectItem>
-                        </SelectContent>
+                            <SelectTrigger id="format">
+                                <SelectValue placeholder="Выберите формат" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="online">Онлайн</SelectItem>
+                                <SelectItem value="offline">Оффлайн</SelectItem>
+                                <SelectItem value="hybrid">Гибрид</SelectItem>
+                            </SelectContent>
                         </Select>
                     </div>
 
@@ -360,17 +360,17 @@ export default function HackathonBoard() {
                     <div className="space-y-2">
                         <Label htmlFor="event_status">Статус</Label>
                         <Select
-                        value={tempFilters.event_status}
-                        onValueChange={(value) => setTempFilters((prev) => ({ ...prev, event_status: value, page: 1 }))}
+                            value={tempFilters.event_status}
+                            onValueChange={(value) => setTempFilters((prev) => ({ ...prev, event_status: value, page: 1 }))}
                         >
-                        <SelectTrigger id="event_status">
-                            <SelectValue placeholder="Выберите статус" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="active">Активные</SelectItem>
-                            <SelectItem value="waiting">Предстоящие</SelectItem>
-                            <SelectItem value="closed">Завершённые</SelectItem>
-                        </SelectContent>
+                            <SelectTrigger id="event_status">
+                                <SelectValue placeholder="Выберите статус" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="active">Активные</SelectItem>
+                                <SelectItem value="waiting">Предстоящие</SelectItem>
+                                <SelectItem value="closed">Завершённые</SelectItem>
+                            </SelectContent>
                         </Select>
                     </div>
 
@@ -386,8 +386,8 @@ export default function HackathonBoard() {
                         <Button
                             variant="outline"
                             onClick={() => {
-                            setFilters(initialFilters)
-                            setTempFilters(initialFilters)
+                                setFilters(initialFilters)
+                                setTempFilters(initialFilters)
                             }}
                             className="flex-1"
                         >
@@ -402,7 +402,6 @@ export default function HackathonBoard() {
                 <div className="w-full md:w-[1100px] mx-auto">
                     <div className="space-y-4 md:space-y-6">
                         {events?.map((event) => (
-                        // {filteredHackathons.map((hackathon) => (
                             <Card key={event.id} className="overflow-hidden w-full">
                                 <div className="flex flex-col md:flex-row h-auto md:h-[300px]">
                                     {/* Event poster */}
@@ -415,44 +414,41 @@ export default function HackathonBoard() {
                                         <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20"></div>
                                         <div className="absolute inset-0 p-4 md:p-6 flex flex-col justify-between text-white">
                                             <div>
-                                                <div className="text-xl md:text-3xl font-bold mb-2 tracking-wider">{event.event_name}</div>
+                                                <div className="text-xl md:text-3xl font-bold mb-2 tracking-wider line-clamp-2 min-h-[56px]">{event.event_name}</div>
                                             </div>
                                         </div>
                                     </div>
                                     {/* Event details */}
-                                    <CardContent className="flex-1 p-4 md:p-6">
-                                        <div className="flex flex-col md:flex-row justify-between items-start mb-4 gap-2 md:gap-0">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3">
-                                                    <h3 className="text-lg md:text-2xl font-semibold">{event.event_name}</h3>
-                                                    {getStatusBadge(event.event_status)}
-                                                    {getFormatBadge(event.format)}
-                                                </div>
-
-                                                <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground mb-2 md:mb-4">
-                                                    <div className="flex items-center gap-1">
-                                                        <ClockIcon className="h-4 w-4" />
-                                                        {parseDate(event.start_date)}
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <MapPinIcon className="h-4 w-4" />
-                                                        {event.venue}
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <UsersIcon className="h-4 w-4" />
-                                                        {event.users_count} участников
-                                                    </div>
-                                                </div>
+                                    <CardContent className="flex-1 p-4 md:p-6 flex flex-col min-h-[240px]">
+                                        {/* Заголовок и бейджи */}
+                                        <div className="flex items-center gap-2 md:gap-3 mb-2 md:mb-3 min-h-[36px]">
+                                            <h3 className="text-lg md:text-2xl font-semibold line-clamp-1 flex-1">{event.event_name}</h3>
+                                            {getStatusBadge(event.event_status)}
+                                            {getFormatBadge(event.format)}
+                                        </div>
+                                        {/* Метаинформация */}
+                                        <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground mb-2 md:mb-4 min-h-[24px]">
+                                            <div className="flex items-center gap-1">
+                                                <ClockIcon className="h-4 w-4" />
+                                                {parseDate(event.start_date)}
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <MapPinIcon className="h-4 w-4" />
+                                                {event.venue}
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <UsersIcon className="h-4 w-4" />
+                                                {event.users_count} участников
                                             </div>
                                         </div>
-
-                                        <div className="mb-4 md:mb-6">
+                                        {/* Описание */}
+                                        <div className="mb-4 md:mb-6 min-h-[48px]">
                                             <h4 className="text-xs md:text-sm font-medium mb-2 md:mb-3 text-muted-foreground">Описание</h4>
-                                            <p className="text-xs md:text-sm leading-relaxed">{event.description}</p>
+                                            <p className="text-xs md:text-sm leading-relaxed line-clamp-2">{event.description}</p>
                                         </div>
-
-                                        <div className="flex justify-between items-center mt-4">
-                                            <span className="text-sm text-gray-400">
+                                        {/* Нижний блок: количество участников и кнопка */}
+                                        <div className="flex justify-between items-end mt-auto pt-2">
+                                            <span className="text-sm text-gray-400 flex items-center">
                                                 <UsersIcon className="inline-block w-4 h-4 mr-1" />
                                                 {event.users_count} участников
                                             </span>

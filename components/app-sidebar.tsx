@@ -27,8 +27,9 @@ import {
   SidebarMenuItem,
   SidebarTrigger
 } from "@/components/ui/sidebar"
-import { useSession } from "next-auth/react"
 import { ROLES } from "@/app/config/roles"
+import { useUserRole } from "@/hooks/useUserRole"
+import { useSession } from "next-auth/react"
 
 const data = {
   navSecondary: [
@@ -64,16 +65,16 @@ const data = {
       url: "/myevents",
       icon: GraduationCap,
     },
-    // {
-    //   name: "Команды",
-    //   url: "/teams",
-    //   icon: Users,
-    // },
-    // {
-    //   name: "Создать мероприятие",
-    //   url: "/createevent",
-    //   icon: PlusCircle,
-    // },
+    {
+      name: "Команды",
+      url: "/teams",
+      icon: Users,
+    },
+    {
+      name: "Создать мероприятие",
+      url: "/createevent",
+      icon: PlusCircle,
+    },
     {
       name: "Сертификаты",
       url: "/certificates",
@@ -83,23 +84,60 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { data: session } = useSession();
+  const { userRole, isRoleLoaded, status, isAdmin, isUser, isOrganizer } = useUserRole();
+  const { status: authStatus } = useSession();
+
+  // Показываем индикатор загрузки пока роль не определена
+  if (!isRoleLoaded || status === "loading") {
+    return (
+      <Sidebar variant="inset" collapsible="icon" className="transition-all duration-200 ease-linear" {...props}>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton size="lg" disabled>
+                <div className="flex items-center justify-center rounded-full bg-gray-200 font-bold text-xl mx-auto my-2 w-10 h-10 min-w-[40px] min-h-[40px] group-data-[state=collapsed]/sidebar:w-6 group-data-[state=collapsed]/sidebar:h-6 group-data-[state=collapsed]/sidebar:min-w-[24px] group-data-[state=collapsed]/sidebar:min-h-[24px] group-data-[state=collapsed]/sidebar:text-base overflow-visible">
+                  U
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Eventer</span>
+                  <span className="truncate text-xs">Загрузка...</span>
+                </div>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
+        <SidebarContent>
+          <div className="flex items-center justify-center p-4">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+          </div>
+        </SidebarContent>
+      </Sidebar>
+    )
+  }
+
+  // Фильтруем проекты на основе роли пользователя
   let filteredProjects = data.projects;
-  if (session?.role && session.role.toUpperCase() === ROLES.USER) {
+
+  if (isUser) {
     filteredProjects = data.projects.filter(
-      (item) => item.url !== "/eventdashboard/1" 
+      (item) =>
+        item.url !== "/eventdashboard/1" &&
+        item.url !== "/createevent" &&
+        item.url !== "/teams"
     );
-  } 
-  // else if (session?.role && session.role.toUpperCase() === ROLES.ORGANAIZER) {
-  //   filteredProjects = data.projects.filter(
-  //     (item) =>
-  //       item.url !== "/myevents" &&
-  //       item.url !== "/allevents" &&
-  //       item.url !== "/certificates"
-  //   );
-  // }
+  } else if (isOrganizer) {
+    filteredProjects = data.projects.filter(
+      (item) =>
+        item.url === "/profile" ||
+        item.url === "/dashboard" ||
+        item.url === "/createevent"
+    );
+  } else if (isAdmin) {
+    // Админ видит все пункты меню
+    filteredProjects = data.projects;
+  }
+
   return (
-    // <Sidebar variant="inset" collapsible="icon" className="transition-all duration-200 ease-linear" {...props}>
     <Sidebar variant="inset" collapsible="icon" className="transition-all duration-200 ease-linear" {...props}>
       <SidebarHeader>
         <SidebarMenu>
@@ -117,15 +155,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        {/* Удалена дублирующая кнопка SidebarTrigger */}
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={filteredProjects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser />
-      </SidebarFooter>
+      {authStatus === "authenticated" && (
+        <SidebarFooter>
+          <NavUser />
+        </SidebarFooter>
+      )}
     </Sidebar>
   )
 }
