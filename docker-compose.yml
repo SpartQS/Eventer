@@ -1,11 +1,12 @@
-version: '3.8'
+version: "3.8"
+
 services:
-  keycloak:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    command: ['start-dev']
+  frontend:
+    container_name: eventer
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - '8080:8080'
+      - "3000:3000"
+    env_file:
+      - .env
