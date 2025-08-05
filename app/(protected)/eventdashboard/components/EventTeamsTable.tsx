@@ -40,6 +40,19 @@ export function EventTeamsTable({
     queryFn: () => apiEventTeams.getEventTeams(Number(eventId)),
   })
 
+//   const getStatusBadge = (status: string) => {
+//     switch (status) {
+//         case "active":
+//             return <Badge className="bg-green-600 hover:bg-green-700">Активный</Badge>
+//         case "waiting":
+//             return <Badge className="bg-blue-600 hover:bg-blue-700">Предстоящий</Badge>
+//         case "closed":
+//             return <Badge className="bg-gray-600 hover:bg-gray-700">Завершен</Badge>
+//         default:
+//             return <Badge variant="secondary">{status}</Badge>
+//     }
+// }
+
   const getStatus = (status: string) => {
     const statusConfig = {
       pending: { icon: CircleAlert, color: 'text-orange-500' },

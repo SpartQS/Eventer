@@ -31,16 +31,32 @@ export interface EventStage {
   end_date: string
 }
 
-// Slavik
+// Slavik // переделать
+// export interface Event {
+//   id: number
+//   event_name: string
+//   description: string
+//   image_url: string
+//   users_count: number
+//   format: string
+//   venue: string
+//   stages: EventStage[]
+// }
+
 export interface Event {
-  id: number
-  event_name: string
-  description: string
-  image_url: string
-  users_count: number
-  format: string
-  venue: string
-  stages: EventStage[]
+  event_name: string;
+  description: string;
+  image_url: string;
+  users_count: number;
+  format: 'offline' | 'online' | string;
+  venue: string;
+  start_date: string; 
+  end_date: string;
+  event_status: 'active' | 'inactive' | string;
+  id: number;
+  organizer_id: number;
+  category_id: number;
+  stages: EventStage[];
 }
 
 export interface CurrentEvents {
@@ -102,12 +118,11 @@ export const apiEvents = {
     return (await restAxios.get(`api/events/events/${event_id}/analytics`)).data
   },
 
-  // slavik // переделать
   getEventDetail: async (id: number): Promise<Event> => {
-    const res = await restAxios.get(`/api/events/${id}`);
-    return res.data as Event;
+    return (await restAxios.get(`api/events/${id}`)).data
   },
 
+  // slavik // переделать
   getMyEvents: async (): Promise<{ events: Event[], total: number, count: number, offset: number }> => {
     const res = await restAxios.get(`api/events/my/participations/?page=1&page_size=10`);
     return res.data;

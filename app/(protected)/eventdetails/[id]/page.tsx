@@ -100,103 +100,42 @@ export default function EventDetailsPage() {
 
       
         return (
-          <div className="fixed inset-0 z-50 bg-black/50 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-black rounded-xl p-6 w-full max-w-md relative shadow-xl">
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 text-gray-600 hover:text-black text-2xl"
-              >
-                &times;
-              </button>
-              {children}
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div
+                    className="absolute inset-0 backdrop-blur-sm"
+                    onClick={onClose}
+                ></div>
+                <Card className="relative z-10 w-full max-w-lg text-white rounded-2xl shadow-2xl p-6">
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="flex items-center gap-2">
+                            <UsersIcon className="w-6 h-6 text-white" />
+                            <h2 className="text-2xl font-semibold">Форма регистрации</h2>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="text-gray-400 hover:text-white text-3xl leading-none"
+                            aria-label="Закрыть"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                    <div className="space-y-4">
+                        {children}
+                    </div>
+                </Card>
             </div>
-          </div>
         );
       }
 
-    const [event, setEvent] = useState<Event | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [timeLeft, setTimeLeft] = useState('');
-
-    const {data: team, isPending } = useQuery({
-        queryKey: ['events'],
+    const {data: team, isPending: isTeamPending } = useQuery({
+        queryKey: ['team'],
         queryFn: () => apiEventTeams.getEventTeam(Number(eventId))
     })
 
-    if (team) {
-        console.log(team)
-        console.log(team['team'])
-    }
-
-    useEffect(() => {
-        setLoading(true);
-        setError(null);
-        apiEvents.getEventDetail(Number(eventId))
-            .then((data) => {
-                setEvent(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError('Ошибка загрузки данных мероприятия');
-                setLoading(false);
-            });
-    }, [eventId]);
-
-    useEffect(() => {
-        if (event?.end_date) {
-            const endDate = new Date(event.end_date);
-            const updateTimer = () => {
-                const now = new Date();
-                if (now > endDate) {
-                    setTimeLeft('Регистрация завершена');
-                } else {
-                    setTimeLeft('Осталось ' + Math.round((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) + ' дней');
-                }
-            };
-            updateTimer();
-            const interval = setInterval(updateTimer, 60000);
-            return () => clearInterval(interval);
-        }
-    }, [event?.end_date]);
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-2xl text-gray-500">Загрузка...</p>
-            </div>
-        );
-    }
-
-    if (error || !event) {
-        return (
-            <div className="flex items-center justify-center h-full">
-                <p className="text-2xl text-gray-500">{error || 'Мероприятие не найдено'}</p>
-            </div>
-        );
-    }
-
-    // Картинка
-    const imageUrl = event.image_url;
-    // Название
-    const eventName = event.event_name;
-    // Статус
-    const eventStatus = event.event_status;
-    // Формат
-    const eventFormat = event.format;
-    // Описание
-    const description = event.description;
-    // Этапы
-    const stages = event.stages;
-    // Место проведения
-    const venue = event.venue;
-    // Количество участников
-    const usersCount = event.users_count;
-    // Даты
-    const startDate = event.start_date;
-    const endDate = event.end_date;
-    // Организатор (id)
-    const organizerId = event.organizer_id;
+    const {data: event, isPending: isEventPending } = useQuery({
+        queryKey: ['events', eventId],
+        queryFn: () => apiEvents.getEventDetail(Number(eventId))
+    })
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -219,27 +158,6 @@ export default function EventDetailsPage() {
                 return <Badge className="bg-muted text-white rounded-full px-4 py-1 text-base font-medium shadow-none">{format}</Badge>;
         }
     };
-
-    // Хардкод для секций, если нет данных с бэка
-    const hardcodedTheses = [
-        "Создание инновационных IT-решений для реального сектора экономики.",
-        "Развитие профессиональных навыков и компетенций участников.",
-        "Формирование новых команд и поддержка стартап-инициатив.",
-        "Поиск и привлечение талантливых специалистов в компании-партнеры.",
-        "Обмен опытом и знаниями внутри IT-сообщества."
-    ];
-    const hardcodedTeams = [
-        { id: 1, name: "Космические инженеры", avatarUrl: "/teams/team-1.png", membersCount: 4 },
-        { id: 2, name: "Нейро-штурм", avatarUrl: "/teams/team-2.png", membersCount: 5 },
-        { id: 3, name: "Data Dreamers", avatarUrl: "/teams/team-3.png", membersCount: 3 },
-        { id: 4, name: "Код-брейкеры", avatarUrl: "/teams/team-4.png", membersCount: 4 }
-    ];
-    const hardcodedContacts = [
-        { name: "Анна Смирнова", role: "Координатор мероприятия", email: "a.smirnova@urfu-bs.ru" },
-        { name: "Техническая поддержка", role: "Помощь с платформой", email: "support@urfu-hack.ru" }
-    ];
-    const hardcodedDetailedDescription =
-        description;
 
     // Универсальный парсер даты (ISO и дд.мм.гггг чч:мм:cc)
     function parseEventDate(dateStr: string): Date | null {
@@ -265,15 +183,18 @@ export default function EventDetailsPage() {
 
     return (
         <div className="container mx-auto px-4 py-4 md:py-8 pb-[160px]">
+            {/* {events?.map((event, idx) => ( */}
+            {event && (
+
             <div className="space-y-4 md:space-y-8">
                 <Card className="overflow-hidden">
                     <CardHeader className="p-0 relative h-64 md:h-80">
-                        <Image src={imageUrl} alt={eventName} fill className="object-cover" />
+                        <Image src={event.image_url} alt={event.event_name} fill className="object-cover" />
                         <div className="absolute inset-0 bg-black/60 flex flex-col justify-end p-6 md:p-8">
-                            <CardTitle className="text-3xl md:text-5xl font-bold text-white leading-tight drop-shadow-lg mb-2">{eventName}</CardTitle>
+                            <CardTitle className="text-3xl md:text-5xl font-bold text-white leading-tight drop-shadow-lg mb-2">{event.event_name}</CardTitle>
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-                                {getStatusBadge(eventStatus)}
-                                {getFormatBadge(eventFormat)}
+                                {getStatusBadge(event.event_status)}
+                                {getFormatBadge(event.format)}
                             </div>
                         </div>
                     </CardHeader>
@@ -285,7 +206,8 @@ export default function EventDetailsPage() {
                             <CardHeader><CardTitle className="flex items-center gap-2"><LandmarkIcon className="w-6 h-6" /> О мероприятии</CardTitle></CardHeader>
                             <CardContent>
                                 <p className="text-muted-foreground whitespace-pre-line">
-                                    {(event as any).detailedDescription || hardcodedDetailedDescription}
+                                    {/* {(event as any).detailedDescription || hardcodedDetailedDescription} */}
+                                    {event.description}
                                 </p>
                             </CardContent>
                         </Card>
@@ -294,23 +216,19 @@ export default function EventDetailsPage() {
                             <CardHeader><CardTitle className="flex items-center gap-2"><TrophyIcon className="w-6 h-6" /> Основные цели</CardTitle></CardHeader>
                             <CardContent className="space-y-4">
                                 <ul className="list-none space-y-3">
-                                    {((event as any).theses || hardcodedTheses).map((thesis: any, index: any) => (
-                                        <li key={index} className="flex items-start gap-3"><CheckIcon className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" /><span className="text-muted-foreground">{thesis}</span></li>
-                                    ))}
+                                        <li className="flex items-start gap-3"><CheckIcon className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" /><span className="text-muted-foreground">Дополнительная информация</span></li>                  
                                 </ul>
                             </CardContent>
                         </Card>
-                        {/* Teams Section */}
                         {/* Stages Section */}
-                        {stages && stages.length > 0 && (
                             <Card>
                                 <CardHeader><CardTitle className="flex items-center gap-2"><ClipboardListIcon className="w-6 h-6" /> Этапы мероприятия</CardTitle></CardHeader>
                                 <CardContent className="space-y-6">
-                                    {stages.map((stage, index) => (
+                                    {event.stages.map((stage, index) => (
                                         <div key={stage.id} className="flex items-start gap-4">
                                             <div className="flex flex-col items-center">
                                                 <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold">{index + 1}</div>
-                                                {index < stages.length - 1 && <div className="w-0.5 h-16 bg-border"></div>}
+                                                {index < event.stages.length - 1 && <div className="w-0.5 h-16 bg-border"></div>}
                                             </div>
                                             <div>
                                                 <p className="font-semibold">{stage.stage_name} - <span className="text-muted-foreground font-normal">{formatEventDate(stage.start_date)} — {formatEventDate(stage.end_date)}</span></p>
@@ -320,39 +238,19 @@ export default function EventDetailsPage() {
                                     ))}
                                 </CardContent>
                             </Card>
-                        )}
 
-                        <Card>
-                            <CardHeader><CardTitle className="flex items-center gap-2"><UsersRoundIcon className="w-6 h-6" /> Зарегистрированные команды</CardTitle></CardHeader>
-                            <CardContent className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {((event as any).teams || hardcodedTeams).map((team: any) => (
-                                    <div key={team.id} className="flex flex-col items-center text-center gap-2">
-                                        <Avatar className="h-20 w-20 border-2 border-transparent hover:border-primary transition-colors">
-                                            <AvatarImage src={team.avatarUrl} alt={team.name} />
-                                            <AvatarFallback>{team.name.substring(0, 2)}</AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <p className="font-semibold text-sm">{team.name}</p>
-                                            <p className="text-xs text-muted-foreground">{team.membersCount} участников</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </CardContent>
-                        </Card>
                         {/* Contacts Section */}
                         <Card>
                             <CardHeader><CardTitle className="flex items-center gap-2"><MessageCircleQuestionIcon className="w-6 h-6" /> Остались вопросы?</CardTitle></CardHeader>
                             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {((event as any).contacts || hardcodedContacts).map((contact: any) => (
-                                    <div key={contact.name} className="flex items-center gap-4 p-4 rounded-lg bg-background">
+                                    <div className="flex items-center gap-4 p-4 rounded-lg bg-background">
                                         <Avatar className="h-12 w-12"><AvatarFallback><MailIcon /></AvatarFallback></Avatar>
                                         <div>
-                                            <p className="font-semibold">{contact.name}</p>
-                                            <p className="text-sm text-muted-foreground">{contact.role}</p>
-                                            <a href={`mailto:${contact.email}`} className="text-sm text-primary hover:underline">{contact.email}</a>
+                                            <p className="font-semibold">Контакты</p>
+                                            <p className="text-sm text-muted-foreground">Роль</p>
+                                            <a className="text-sm text-primary hover:underline">email</a>
                                         </div>
                                     </div>
-                                ))}
                             </CardContent>
                         </Card>
                     </div>
@@ -368,20 +266,11 @@ export default function EventDetailsPage() {
 
                                 <div className="bg-muted rounded-lg text-center p-3">
                                     <p className="text-xs text-white">Регистрация закроется</p>
-                                    <p className="text-lg font-bold text-white">{timeLeft}</p>
+                                    {/* <p className="text-lg font-bold text-white">{timeLeft}</p> */}
                                 </div>
                                 <Button size="lg" variant="ghost" className="w-full bg-muted text-white hover:bg-muted/80 rounded-lg"><Share2Icon className="w-5 h-5 mr-2" /> Поделиться</Button>
                                 {/* Модалка */}
                                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                                    {/* {status === 'authenticated' ? (<>hello</>) : (router.push('/p'))} */}
-                                    <Card>
-                                        <CardHeader>
-                                            <CardTitle className="flex items-center gap-2">
-                                                <UsersIcon className="w-6 h-6" />
-                                                <h2 className="text-xl font-bold mb-4">Форма регистрации</h2>
-                                            </CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
                                         {/* Create team */}
                                         {showSuccess && (
                                             <div style={{
@@ -434,8 +323,6 @@ export default function EventDetailsPage() {
                                             подать заявку
                                         </Button>
                                     {/* <Button onClick={() => setIsModalOpen(false)}>Закрыть</Button> */}
-                                        </CardContent>
-                                    </Card>
                                 </Modal>
                             </CardContent>
                         </Card>
@@ -444,15 +331,10 @@ export default function EventDetailsPage() {
                         <Card className="bg-card border border-border rounded-xl overflow-hidden">
                             <CardContent className="p-6">
                                 <ul className="space-y-5 text-white text-lg">
-                                    <li className="flex items-center gap-4"><CalendarIcon className="w-7 h-7 text-white" /><span className="text-lg md:text-xl font-semibold">{formatEventDate(startDate)}{endDate ? ` — ${formatEventDate(endDate)}` : ''}</span></li>
-                                    <li className="flex items-center gap-4"><MapPinIcon className="w-7 h-7 text-white" /><span className="text-lg md:text-xl font-semibold">{venue}</span></li>
-                                    <li className="flex items-center gap-4"><UsersIcon className="w-7 h-7 text-white" /><span className="text-lg md:text-xl font-semibold">Участников: {usersCount}</span></li>
+                                    <li className="flex items-center gap-4"><CalendarIcon className="w-7 h-7 text-white" /><span className="text-lg md:text-xl font-semibold">{formatEventDate(event.start_date)}{event.end_date ? ` — ${formatEventDate(event.end_date)}` : ''}</span></li>
+                                    <li className="flex items-center gap-4"><MapPinIcon className="w-7 h-7 text-white" /><span className="text-lg md:text-xl font-semibold">{event.venue}</span></li>
+                                    <li className="flex items-center gap-4"><UsersIcon className="w-7 h-7 text-white" /><span className="text-lg md:text-xl font-semibold">Участников: {event.users_count}</span></li>
                                 </ul>
-                                <Separator className="my-4 bg-muted" />
-                                <div className="space-y-2">
-                                    <h4 className="font-semibold text-white/70">ID организатора</h4>
-                                    <p className="text-sm text-white/70">{organizerId}</p>
-                                </div>
                             </CardContent>
                         </Card>
 
@@ -523,9 +405,10 @@ export default function EventDetailsPage() {
                     </div>
                 </div>
             </div>
+            )}
             {/* Мобильный фиксированный блок регистрации */}
             <div className="fixed bottom-0 left-0 w-full z-40 bg-card border-t border-border px-5 py-3 flex flex-col items-center gap-3 md:hidden">
-                {timeLeft !== 'Регистрация завершена' ? (
+                {/* {timeLeft !== 'Регистрация завершена' ? (
                     <>
                         <Button size="lg" className="w-full text-lg font-bold bg-green-600 hover:bg-green-700 text-white h-[56px] rounded-lg flex items-center justify-center"><UserPlusIcon className="w-6 h-6 mr-2" /> Подать заявку</Button>
                         <div className="text-center w-full">
@@ -540,7 +423,7 @@ export default function EventDetailsPage() {
                             <p className="text-xs text-muted-foreground">больше не доступна</p>
                         </div>
                     </>
-                )}
+                )} */}
             </div>
         </div>
     );

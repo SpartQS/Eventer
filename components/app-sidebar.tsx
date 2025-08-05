@@ -51,7 +51,7 @@ const data = {
     },
     {
       name: "Дашборд",
-      url: "/dashboard",
+      url: "/eventdashboard/1",
       icon: ClipboardList,
     },
     {
@@ -64,16 +64,16 @@ const data = {
       url: "/myevents",
       icon: GraduationCap,
     },
-    {
-      name: "Команды",
-      url: "/teams",
-      icon: Users,
-    },
-    {
-      name: "Создать мероприятие",
-      url: "/createevent",
-      icon: PlusCircle,
-    },
+    // {
+    //   name: "Команды",
+    //   url: "/teams",
+    //   icon: Users,
+    // },
+    // {
+    //   name: "Создать мероприятие",
+    //   url: "/createevent",
+    //   icon: PlusCircle,
+    // },
     {
       name: "Сертификаты",
       url: "/certificates",
@@ -87,17 +87,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   let filteredProjects = data.projects;
   if (session?.role && session.role.toUpperCase() === ROLES.USER) {
     filteredProjects = data.projects.filter(
-      (item) => item.url !== "/dashboard" && item.url !== "/createevent"
+      (item) => item.url !== "/eventdashboard/1" 
     );
-  } else if (session?.role && session.role.toUpperCase() === ROLES.ORGANAIZER) {
-    filteredProjects = data.projects.filter(
-      (item) =>
-        item.url !== "/myevents" &&
-        item.url !== "/allevents" &&
-        item.url !== "/certificates"
-    );
-  }
+  } 
+  // else if (session?.role && session.role.toUpperCase() === ROLES.ORGANAIZER) {
+  //   filteredProjects = data.projects.filter(
+  //     (item) =>
+  //       item.url !== "/myevents" &&
+  //       item.url !== "/allevents" &&
+  //       item.url !== "/certificates"
+  //   );
+  // }
   return (
+    // <Sidebar variant="inset" collapsible="icon" className="transition-all duration-200 ease-linear" {...props}>
     <Sidebar variant="inset" collapsible="icon" className="transition-all duration-200 ease-linear" {...props}>
       <SidebarHeader>
         <SidebarMenu>

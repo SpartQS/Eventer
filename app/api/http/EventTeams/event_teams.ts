@@ -27,8 +27,24 @@ interface TeamsResponse {
   teams: Team[];
 }
 
+interface MyTeam {
+  name: string;
+  invite_token: string;
+}
+
+interface MyMember {
+  firstname: string;
+  lastname: string;
+  is_event_leader: boolean;
+}
+
+interface MyTeamWithMembers {
+  team: MyTeam;
+  members: MyMember[];
+}
+
 export const apiEventTeams = {
-  getEventTeam: async (event_id: number) => {
+  getEventTeam: async (event_id: number): Promise<MyTeamWithMembers> => {
     return (await restAxios.get(`api/events/${event_id}/event-teams/my`)).data
   },
   createTeam: async (event_id: number, name: string) => {
