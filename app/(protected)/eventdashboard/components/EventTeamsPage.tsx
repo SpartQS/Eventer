@@ -39,6 +39,7 @@ import { EventTeamsTable } from "./EventTeamsTable"
 import { useQuery } from "@tanstack/react-query"
 import { apiEvents } from "@/app/api/http/event/events"
 import { useParams } from "next/navigation"
+import { Separator } from "@/components/ui/separator"
 
 // Mock data - команды для текущего ивента
 const mockTeams = [
@@ -309,10 +310,10 @@ export default function EventTeamsPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
 
-  const { data: eventstats, isPending, error} = useQuery({
+  const { data: eventstats, isPending, error } = useQuery({
     queryKey: ['EventsStat'],
     queryFn: () => apiEvents.getEventStats(Number(eventId)),
-})
+  })
 
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -377,43 +378,52 @@ export default function EventTeamsPage() {
   }
 
   return (
-      <div className="min-h-screen bg-background text-foreground p-10">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-12">
-          <div className="flex flex-col gap-8">
-            <h1 className="text-4xl font-extrabold">Команды ивента</h1>
+    <div className="min-h-screen bg-background text-foreground px-2 md:px-8 py-8">
+      <div className="max-w-6xl mx-auto flex flex-col gap-8">
+        {/* Заголовок страницы */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-2">
+          <div className="flex items-center gap-4">
+            <Users className="w-10 h-10 text-primary" />
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold leading-tight">Команды мероприятия</h1>
+              <p className="text-base text-muted-foreground mt-1">Управление командами и участниками</p>
+            </div>
           </div>
-          <EventNavigation />
-          {/* Main Content */}
-          <div className="space-y-10">
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
-                <EventTeamStatsCard title='Всего команд' value={eventstats?.total_teams ?? 0} subtitle='в ивенте' icon={Users} isLoading={isPending}/>
-                <EventTeamStatsCard title='Одобрено' value={eventstats?.teams?.approved ?? 0} subtitle='готовы к участию' icon={CircleCheckBig} color='text-green-500' isLoading={isPending} />
-                <EventTeamStatsCard title='Ожидает' value={eventstats?.teams?.pending ?? 0} subtitle='требует решения' icon={CircleAlert} color='text-orange-500' isLoading={isPending} />
-                <EventTeamStatsCard title='Отклонено' value={eventstats?.teams?.rejected ?? 0} subtitle='не прошли отбор' icon={XCircle} color='text-red-500' isLoading={isPending} />
-                <EventTeamStatsCard title='Участников' value={eventstats?.total_participants ?? 0} subtitle='всего человек' icon={Users} color='text-blue-500' isLoading={isPending} />
-              </div>
-            {/* <EventTeamFilters
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              statusFilter={statusFilter}
-              setStatusFilter={setStatusFilter}
-            /> */}
-            <EventTeamsTable
-              filteredTeams={filteredTeams}
-              selectedTeam={selectedTeam}
-              setSelectedTeam={setSelectedTeam}
-              isDetailModalOpen={isDetailModalOpen}
-              setIsDetailModalOpen={setIsDetailModalOpen}
-              getStatusBadge={getStatusBadge}
-              getParentalConsentBadge={getParentalConsentBadge}
-              handleTeamAction={handleTeamAction}
-              handleParentalConsentAction={handleParentalConsentAction}
-              handleMassParentalConsent={handleMassParentalConsent}
-              openTeamDetails={openTeamDetails}
-              mockTeams={mockTeams}
-            />
-          </div>
+          {/* Можно добавить кнопку создания команды или фильтр */}
+        </div>
+
+        {/* Навигация по разделам дашборда */}
+        <EventNavigation />
+
+        {/* Статистика */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6 mt-2">
+          <EventTeamStatsCard title='Всего команд' value={eventstats?.total_teams ?? 0} subtitle='в ивенте' icon={Users} isLoading={isPending} />
+          <EventTeamStatsCard title='Одобрено' value={eventstats?.teams?.approved ?? 0} subtitle='готовы к участию' icon={CircleCheckBig} color='text-green-500' isLoading={isPending} />
+          <EventTeamStatsCard title='Ожидает' value={eventstats?.teams?.pending ?? 0} subtitle='требует решения' icon={CircleAlert} color='text-orange-500' isLoading={isPending} />
+          <EventTeamStatsCard title='Отклонено' value={eventstats?.teams?.rejected ?? 0} subtitle='не прошли отбор' icon={XCircle} color='text-red-500' isLoading={isPending} />
+          <EventTeamStatsCard title='Участников' value={eventstats?.total_participants ?? 0} subtitle='всего человек' icon={Users} color='text-blue-500' isLoading={isPending} />
+        </div>
+
+        <Separator className="my-6" />
+
+        {/* Основной контент: таблица команд */}
+        <div className="bg-card rounded-2xl shadow-lg p-0 md:p-4">
+          <EventTeamsTable
+            filteredTeams={filteredTeams}
+            selectedTeam={selectedTeam}
+            setSelectedTeam={setSelectedTeam}
+            isDetailModalOpen={isDetailModalOpen}
+            setIsDetailModalOpen={setIsDetailModalOpen}
+            getStatusBadge={getStatusBadge}
+            getParentalConsentBadge={getParentalConsentBadge}
+            handleTeamAction={handleTeamAction}
+            handleParentalConsentAction={handleParentalConsentAction}
+            handleMassParentalConsent={handleMassParentalConsent}
+            openTeamDetails={openTeamDetails}
+            mockTeams={mockTeams}
+          />
         </div>
       </div>
-  )
+    </div>
+  );
 }

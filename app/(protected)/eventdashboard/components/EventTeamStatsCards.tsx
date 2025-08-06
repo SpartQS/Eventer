@@ -11,23 +11,32 @@ interface EventTeamStatsCardProps {
   isLoading: boolean;
 }
 
-export default function EventTeamStatsCard({ title, value, subtitle, icon: Icon, color, isLoading }: EventTeamStatsCardProps) {
+export default function EventTeamStatsCard({
+  title,
+  value,
+  subtitle,
+  icon: Icon,
+  color,
+  isLoading
+}: EventTeamStatsCardProps) {
   return (
-    <Card className="p-6">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-xl font-bold">{title}</CardTitle>
-        <Icon className={`h-6 w-6 ${color || 'text-muted-foreground'}`} />
+    <Card className="p-6 h-full flex flex-col">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pb-4">
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
+        <Icon className={`h-5 w-5 ${color || 'text-muted-foreground'}`} />
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="p-0 flex flex-col flex-grow justify-between">
         {isLoading ? (
-          <Skeleton className="h-8 w-20 mb-2" />
+          <Skeleton className="h-8 w-20 my-2" />
         ) : (
-          <div className={`text-3xl font-extrabold ${color || ''}`}>{value}</div>
+          <div className={`text-3xl font-bold ${color || ''}`}>{value}</div>
         )}
-        <p className="text-base text-muted-foreground">{subtitle}</p>
+        <p className="text-xs text-muted-foreground mt-2">
+          {subtitle}
+        </p>
       </CardContent>
     </Card>
   );
 }
-
-

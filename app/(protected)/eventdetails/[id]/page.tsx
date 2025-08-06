@@ -39,6 +39,7 @@ export default function EventDetailsPage() {
     const [rulesConsent, setRulesConsent] = useState(false);
     const [documents, setDocuments] = useState<File[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     // Для тестирования - можно переключать возраст
     const [testMode, setTestMode] = useState(false);
@@ -77,12 +78,64 @@ export default function EventDetailsPage() {
     // Функция для обработки загрузки документов
     const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files || []);
-        setDocuments(prev => [...prev, ...files]);
+        addFilesToDocuments(files);
+    };
+
+    // Функция для добавления файлов с валидацией
+    const addFilesToDocuments = (files: File[]) => {
+        setIsUploading(true);
+
+        // Имитация загрузки для лучшего UX
+        setTimeout(() => {
+            const validFiles = files.filter(file => {
+                // Проверка размера файла (максимум 10 МБ)
+                if (file.size > 10 * 1024 * 1024) {
+                    toast.error(`Файл ${file.name} слишком большой. Максимальный размер: 10 МБ`);
+                    return false;
+                }
+
+                // Проверка типа файла
+                const allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
+                const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+                if (!allowedTypes.includes(fileExtension)) {
+                    toast.error(`Файл ${file.name} имеет неподдерживаемый формат`);
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (validFiles.length > 0) {
+                setDocuments(prev => [...prev, ...validFiles]);
+                toast.success(`Загружено файлов: ${validFiles.length}`);
+            }
+
+            setIsUploading(false);
+        }, 500);
     };
 
     // Функция для удаления документа
     const removeDocument = (index: number) => {
         setDocuments(prev => prev.filter((_, i) => i !== index));
+    };
+
+    // Функция для обработки drag & drop
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.currentTarget.classList.add('border-green-500', 'bg-green-500/10');
+    };
+
+    const handleDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('border-green-500', 'bg-green-500/10');
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        e.currentTarget.classList.remove('border-green-500', 'bg-green-500/10');
+
+        const files = Array.from(e.dataTransfer.files);
+        addFilesToDocuments(files);
     };
 
     const CreateTeamMutation = useMutation<JoinTeamResponse, Error, { event_id: number; name: string }>({
@@ -147,6 +200,7 @@ export default function EventDetailsPage() {
         setDocuments([]);
         setIsAdult(null);
         setIsSubmitting(false);
+        setIsUploading(false);
     };
 
     // Функция для закрытия модального окна
@@ -214,7 +268,7 @@ export default function EventDetailsPage() {
                     ) : isAdult ? (
                         // Модальное окно для совершеннолетних
                         <div className="space-y-4">
-                            {team_name ? (
+                            {token == null ? (
                                 <>
                                     <div className="text-xl font-bold mb-4">Создать команду</div>
                                     <div className="space-y-2">
@@ -282,7 +336,7 @@ export default function EventDetailsPage() {
                                 <span className="text-yellow-400 font-medium">Для несовершеннолетних участников</span>
                             </div>
 
-                            {team_name ? (
+                            {token == null ? (
                                 <>
                                     <div className="text-xl font-bold mb-4">Создать команду</div>
                                     <div className="space-y-2">
@@ -301,38 +355,100 @@ export default function EventDetailsPage() {
                             )}
 
                             {/* Загрузка документов */}
-                            <div className="space-y-2">
-                                <Label htmlFor="documents" className="flex items-center gap-2">
+                            <div className="space-y-4">
+                                <Label className="flex items-center gap-2 text-sm font-medium">
                                     <Upload className="w-4 h-4" />
-                                    Загрузить документы (сертификаты, согласие родителей)
+                                    Загрузить документы
                                 </Label>
-                                <Input
-                                    id="documents"
-                                    type="file"
-                                    multiple
-                                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                    onChange={handleDocumentUpload}
-                                    className="bg-gray-800 border-gray-600 text-white file:bg-green-600 file:border-0 file:text-white file:px-4 file:py-2 file:rounded file:cursor-pointer"
-                                />
+
+                                {/* Drag & Drop зона */}
+                                <div className="relative">
+                                    <div className={`border-2 border-dashed rounded-lg p-6 text-center transition-all duration-200 ${isUploading
+                                        ? 'border-green-500 bg-green-500/10'
+                                        : 'border-gray-600 hover:border-green-500'
+                                        }`}
+                                        onDragOver={handleDragOver}
+                                        onDragLeave={handleDragLeave}
+                                        onDrop={handleDrop}
+                                    >
+                                        <div className="flex flex-col items-center gap-3">
+                                            <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors duration-200 ${isUploading
+                                                ? 'bg-green-500/30 animate-pulse'
+                                                : 'bg-green-600/20'
+                                                }`}>
+                                                {isUploading ? (
+                                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-400"></div>
+                                                ) : (
+                                                    <Upload className="w-6 h-6 text-green-400" />
+                                                )}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-white mb-1">
+                                                    {isUploading ? 'Загрузка файлов...' : 'Перетащите файлы сюда или нажмите для выбора'}
+                                                </p>
+                                                <p className="text-xs text-gray-400">
+                                                    Поддерживаются: PDF, DOC, DOCX, JPG, PNG (макс. 10 МБ)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <Input
+                                            id="documents"
+                                            type="file"
+                                            multiple
+                                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                            onChange={handleDocumentUpload}
+                                            disabled={isUploading}
+                                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                                        />
+                                    </div>
+                                </div>
 
                                 {/* Список загруженных документов */}
                                 {documents.length > 0 && (
-                                    <div className="space-y-2">
-                                        <Label className="text-sm text-gray-300">Загруженные документы:</Label>
-                                        {documents.map((file, index) => (
-                                            <div key={index} className="flex items-center justify-between p-2 bg-gray-800 rounded border border-gray-600">
-                                                <div className="flex items-center gap-2">
-                                                    <FileText className="w-4 h-4 text-green-400" />
-                                                    <span className="text-sm">{file.name}</span>
-                                                </div>
-                                                <button
-                                                    onClick={() => removeDocument(index)}
-                                                    className="text-red-400 hover:text-red-300 text-sm"
+                                    <div className="space-y-3">
+                                        <Label className="text-sm font-medium text-gray-300">
+                                            Загруженные документы ({documents.length})
+                                        </Label>
+                                        <div className="space-y-2 max-h-40 overflow-y-auto">
+                                            {documents.map((file, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="group flex items-center justify-between p-3 bg-gray-800/50 rounded-lg border border-gray-700 hover:border-green-500/50 transition-all duration-200"
                                                 >
-                                                    Удалить
-                                                </button>
-                                            </div>
-                                        ))}
+                                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                        <div className="w-8 h-8 bg-green-600/20 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                            <FileText className="w-4 h-4 text-green-400" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="text-sm font-medium text-white truncate">
+                                                                {file.name}
+                                                            </p>
+                                                            <p className="text-xs text-gray-400">
+                                                                {(file.size / 1024 / 1024).toFixed(2)} МБ
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => removeDocument(index)}
+                                                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-red-500/20 rounded text-red-400 hover:text-red-300"
+                                                        title="Удалить файл"
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Индикатор прогресса (если нужно) */}
+                                {documents.length === 0 && (
+                                    <div className="text-center py-4">
+                                        <p className="text-xs text-gray-500">
+                                            Загрузите сертификаты, согласие родителей или другие необходимые документы
+                                        </p>
                                     </div>
                                 )}
                             </div>

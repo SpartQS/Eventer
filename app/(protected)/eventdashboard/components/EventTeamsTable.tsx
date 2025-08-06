@@ -28,172 +28,166 @@ export function EventTeamsTable({
 }: any) {
   const params = useParams();
   const eventId = params.id;
-  
-  const [openRowIndex, setOpenRowIndex] = useState<number | null>(null)
+
+  const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
 
   const toggleRow = (index: number) => {
-    setOpenRowIndex(openRowIndex === index ? null : index)
-  }
+    setOpenRowIndex(openRowIndex === index ? null : index);
+  };
 
-  const { data: teams, isPending, error} = useQuery({
+  const { data: teams, isPending, error } = useQuery({
     queryKey: ['Eventsteam'],
     queryFn: () => apiEventTeams.getEventTeams(Number(eventId)),
-  })
-
-//   const getStatusBadge = (status: string) => {
-//     switch (status) {
-//         case "active":
-//             return <Badge className="bg-green-600 hover:bg-green-700">Активный</Badge>
-//         case "waiting":
-//             return <Badge className="bg-blue-600 hover:bg-blue-700">Предстоящий</Badge>
-//         case "closed":
-//             return <Badge className="bg-gray-600 hover:bg-gray-700">Завершен</Badge>
-//         default:
-//             return <Badge variant="secondary">{status}</Badge>
-//     }
-// }
+  });
 
   const getStatus = (status: string) => {
     const statusConfig = {
       pending: { icon: CircleAlert, color: 'text-orange-500' },
       approved: { icon: CheckCircle, color: 'text-green-500' },
       rejected: { icon: XCircle, color: 'text-red-500' },
-    }
+    };
 
+    const Icon = statusConfig[status]?.icon || CircleAlert;
+    const color = statusConfig[status]?.color || 'text-muted-foreground';
 
-    // const config = statusConfig[status]
-    // const Icon = config.icon
-    const Icon = statusConfig[status].icon
-    const color = statusConfig[status].color
-
-    return (
-      <Icon className={color} /> 
-    )
-  }
+    return <Icon className={`h-5 w-5 ${color}`} />;
+  };
 
   function parseDate(dateStr: string) {
-    const date = new Date(dateStr); 
+    const date = new Date(dateStr);
     const year = date.getUTCFullYear();
-    const month = date.getUTCMonth() + 1; 
-    const day = date.getUTCDate();
-    
-    return `${year}-${month}-${day}`
-} 
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  }
 
   return (
-    <Card className="p-8">
-      <CardHeader className="pb-4">
+    <Card className="p-6">
+      <CardHeader className="pb-4 px-0">
         <CardTitle className="text-2xl font-bold">Команды ивента "Хакатон 2024"</CardTitle>
-        <CardDescription className="text-lg">
+        <CardDescription className="text-base">
           Найдено {filteredTeams.length} команд из {mockTeams.length} зарегистрированных
         </CardDescription>
       </CardHeader>
-      <CardContent className="pt-0">
-        <div className="rounded-xl border">
+      <CardContent className="pt-0 px-0">
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="text-lg">Статус</TableHead>
-                <TableHead className="text-lg">Название команды</TableHead>
-                <TableHead className="text-lg">Дата создания</TableHead>
-                <TableHead className="text-lg">Действия</TableHead>
+                <TableHead className="w-[100px]">Статус</TableHead>
+                <TableHead>Название команды</TableHead>
+                <TableHead className="w-[150px]">Дата создания</TableHead>
+                <TableHead className="w-[300px] text-right">Действия</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isPending || !teams?.teams ? (
-                <TableRow >
-                  <TableCell colSpan={6}><Skeleton className="h-5 w-auto" /></TableCell>
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center">
+                    <Skeleton className="h-6 w-full" />
+                  </TableCell>
                 </TableRow>
               ) : (
-                <>
-              {teams?.teams.map((team, idx) => ( <>
-                  <TableRow onClick={() => toggleRow(idx)} key={idx} className="cursor-pointer hover:bg-muted/50 text-lg">
-                    <TableCell className="font-semibold">{getStatus(team.status)}</TableCell>
-                    <TableCell className="font-semibold">{team.name}</TableCell>
-                    {/* <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Users className="w-5 h-5" />
-                        {team.memberCount}
-                        {team.members?.some((m: any) => m.isMinor) && (
-                          <AlertTriangle
-                            className="w-5 h-5 text-yellow-600"
-                            title="Есть несовершеннолетние участники"
-                          />
-                        )}
-                      </div>
-                    </TableCell> */}
-                    {/* <TableCell>{team.captain}</TableCell> */}
-                    {/* <TableCell>{getStatusBadge(team.status)}</TableCell> */}
-                    {/* <TableCell>{new Date(team.submissionDate).toLocaleDateString('ru-RU')}</TableCell> */}
-                    <TableCell>{parseDate(team.created_at)}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Button variant="outline" size="lg" onClick={() => openTeamDetails(team)}>
-                          <Eye className="w-5 h-5 mr-2" />
-                          Детали
-                        </Button>
-                        {team.status === 'pending' && (
-                          <>
-                            <Button variant="default" size="lg" onClick={() => handleTeamAction(team.id, 'approve')}>
-                              <CheckCircle className="w-5 h-5 mr-2" />
-                              Одобрить
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="lg"
-                              onClick={() => handleTeamAction(team.id, 'reject')}
-                            >
-                              <XCircle className="w-5 h-5 mr-2" />
-                              Отклонить
-                            </Button>
-                          </>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                  {openRowIndex === idx && (
-                    // <TableRow>
-                    //   <TableCell className="p-2 border-b bg-gray-50 text-sm text-gray-600">
-                    //     {team.captain}
-                    //   </TableCell>
-                    //   <TableCell className="p-2 border-b bg-gray-50 text-sm text-gray-600">
-                    //     {team.captain}
-                    //   </TableCell>
-                    // </TableRow>
-                    <tr>
-                      {team.members.map((member) => (
-                        <td className="p-2 hover:bg-muted/50" colSpan={6}>
-                        {/* Вложенная таблица */}
-                        <table className="w-full table-auto bg-muted/80">
-                          <thead className="hover:bg-muted/50">
-                            <tr>
-                              <th className="p-2 text-left text-sm w-1/20">Лидер</th>
-                              <th className="p-2 text-left text-sm">Имя</th>
-                              <th className="p-2 text-left text-sm">Фамилия</th>
-                              <th className="p-2 text-left text-sm">Согласие</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                              <tr className="hover:bg-muted/50">
-                                <td className="p-2 text-sm border-t w-1/20">{member.is_event_leader && <CheckCircle/>}</td>
-                                <td className="p-2 text-sm border-t">{member.firstname}</td>
-                                <td className="p-2 text-sm border-t">{member.lastname}</td>
-                                <td className="p-2 text-sm border-t">
-                                <Button variant="outline" size="lg">
-                                  <Eye className="w-5 h-5 mr-2" />
-                                  Скачать согласие
-                                </Button>
-                                </td>
-                              </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                      ))}
-                    </tr>
-                  )}
-              </>
-              ))}
-              </>
+                teams?.teams.map((team, idx) => (
+                  <>
+                    <TableRow
+                      key={team.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => toggleRow(idx)}
+                    >
+                      <TableCell>
+                        <div className="flex items-center">
+                          {getStatus(team.status)}
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">{team.name}</TableCell>
+                      <TableCell>{parseDate(team.created_at)}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openTeamDetails(team);
+                            }}
+                            className="hover:bg-gray-100"
+                          >
+                            <Eye className="w-4 h-4 mr-2" />
+                            Детали
+                          </Button>
+                          {team.status === 'pending' && (
+                            <>
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTeamAction(team.id, 'approve');
+                                }}
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                <CheckCircle className="w-4 h-4 mr-2" />
+                                Одобрить
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTeamAction(team.id, 'reject');
+                                }}
+                                className="hover:bg-red-700"
+                              >
+                                <XCircle className="w-4 h-4 mr-2" />
+                                Отклонить
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                    {openRowIndex === idx && (
+                      <TableRow className="bg-muted/20">
+                        <TableCell colSpan={4} className="p-0">
+                          <div className="p-4">
+                            <h4 className="text-sm font-medium mb-2">Участники команды:</h4>
+                            <div className="border rounded-lg overflow-hidden">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead className="w-[50px]">Лидер</TableHead>
+                                    <TableHead>Имя</TableHead>
+                                    <TableHead>Фамилия</TableHead>
+                                    <TableHead className="text-right">Согласие</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {team.members?.map((member) => (
+                                    <TableRow key={member.id}>
+                                      <TableCell>
+                                        {member.is_event_leader && <CheckCircle className="h-4 w-4 text-green-500" />}
+                                      </TableCell>
+                                      <TableCell>{member.firstname}</TableCell>
+                                      <TableCell>{member.lastname}</TableCell>
+                                      <TableCell className="text-right">
+                                        <Button variant="outline" size="sm">
+                                          <Eye className="w-4 h-4 mr-2" />
+                                          Скачать согласие
+                                        </Button>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </>
+                ))
               )}
             </TableBody>
           </Table>
@@ -208,7 +202,9 @@ export function EventTeamsTable({
               <Users className="w-5 h-5" />
               {selectedTeam?.name}
             </DialogTitle>
-            <DialogDescription>Детальная информация о команде для ивента "Хакатон 2024"</DialogDescription>
+            <DialogDescription>
+              Детальная информация о команде для ивента "Хакатон 2024"
+            </DialogDescription>
           </DialogHeader>
 
           {selectedTeam && (
@@ -222,7 +218,7 @@ export function EventTeamsTable({
                 <div className="grid grid-cols-2 gap-4 p-4 bg-muted/50 rounded-lg">
                   <div>
                     <Label className="text-sm font-medium">Капитан команды</Label>
-                    <p className="text-lg">{selectedTeam.captain}</p>
+                    <p className="text-base">{selectedTeam.captain}</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium">Статус заявки</Label>
@@ -230,11 +226,13 @@ export function EventTeamsTable({
                   </div>
                   <div>
                     <Label className="text-sm font-medium">Ивент</Label>
-                    <p className="text-lg">Хакатон 2024</p>
+                    <p className="text-base">Хакатон 2024</p>
                   </div>
                   <div>
                     <Label className="text-sm font-medium">Дата подачи</Label>
-                    <p className="text-lg">{new Date(selectedTeam.submissionDate).toLocaleDateString('ru-RU')}</p>
+                    <p className="text-base">
+                      {new Date(selectedTeam.submissionDate).toLocaleDateString('ru-RU')}
+                    </p>
                   </div>
                 </div>
 
@@ -279,12 +277,17 @@ export function EventTeamsTable({
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-semibold">Родительские согласия</h3>
                   <div className="flex gap-2">
-                    <Button variant="default" onClick={() => handleMassParentalConsent(selectedTeam.id, 'approve')}>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={() => handleMassParentalConsent(selectedTeam.id, 'approve')}
+                    >
                       <UserCheck className="w-4 h-4 mr-2" />
                       Одобрить все
                     </Button>
                     <Button
                       variant="destructive"
+                      size="sm"
                       onClick={() => handleMassParentalConsent(selectedTeam.id, 'reject')}
                     >
                       <UserX className="w-4 h-4 mr-2" />
@@ -314,7 +317,9 @@ export function EventTeamsTable({
                             <div className="flex items-center gap-4">
                               <div className="text-right">
                                 <Label className="text-sm font-medium">Родительское согласие</Label>
-                                <div className="mt-1">{getParentalConsentBadge(member.parentalConsent)}</div>
+                                <div className="mt-1">
+                                  {getParentalConsentBadge(member.parentalConsent)}
+                                </div>
                               </div>
 
                               {member.parentalConsent === 'pending' && (
@@ -354,4 +359,4 @@ export function EventTeamsTable({
       </Dialog>
     </Card>
   );
-} 
+}
