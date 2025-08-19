@@ -1,11 +1,11 @@
 'use client'
-import HackathonBoard from "@/app/(protected)/allevents/components/hackathon-board"
+import EventTeamsPage from "../components/EventTeamsPage"
 import { RoleGuard } from "@/components/role-guard"
 
 export default function EventsPage() {
     return (
         // <RoleGuard>
-            <HackathonBoard />
+            <EventTeamsPage />
         // </RoleGuard>
     )
 } 

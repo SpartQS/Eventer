@@ -16,8 +16,8 @@ const keycloakAxios = axios.create({
 
 export const restAxios = axios.create({
   // baseURL: process.env.API_URL,
-  // baseURL: '//localhost:8000',
-  baseURL: '//146.103.49.237:8000',
+  baseURL: '//localhost:8000',
+  // baseURL: '//146.103.49.237:8000',
 });
 
 restAxios.interceptors.request.use(async (config) => {

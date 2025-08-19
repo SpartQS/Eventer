@@ -15,9 +15,10 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { apiUsers } from "@/app/api/http/users/users";
 import { apiInvites } from "@/app/api/http/invites/invites";
+import { toast } from "sonner";
 
 interface NotificationItem {
     id: number
@@ -28,37 +29,62 @@ interface NotificationItem {
 }
 
 export function Notifications() {
-    const [notifications, setNotifications] = useState<NotificationItem[]>([
-        {
-            id: 1,
-            message: "Команда Horizon приглашает вас присоединиться к хакатону",
-            time: "2 часа назад",
-            inviter: "Horizon",
-            event: "Хакатон",
-        },
-        {
-            id: 2,
-            message: "Команда Fly приглашает вас присоединиться к киберспорту",
-            time: "3 часа назад",
-            inviter: "Fly",
-            event: "Киберспорт",
-        },
-    ])
+    // const [notifications, setNotifications] = useState<NotificationItem[]>([
+    //     {
+    //         id: 1,
+    //         message: "Команда Horizon приглашает вас присоединиться к хакатону",
+    //         time: "2 часа назад",
+    //         inviter: "Horizon",
+    //         event: "Хакатон",
+    //     },
+    //     {
+    //         id: 2,
+    //         message: "Команда Fly приглашает вас присоединиться к киберспорту",
+    //         time: "3 часа назад",
+    //         inviter: "Fly",
+    //         event: "Киберспорт",
+    //     },
+    // ])
 
-    const handleAccept = (id: number) => {
-        console.log(`Accepted invitation ${id}`)
-        setNotifications((prev) => prev.filter((n) => n.id !== id))
-    }
+    // const handleAccept = (id: number) => {
+    //     console.log(`Accepted invitation ${id}`)
+    //     setNotifications((prev) => prev.filter((n) => n.id !== id))
+    // }
 
-    const handleDecline = (id: number) => {
-        console.log(`Declined invitation ${id}`)
-        setNotifications((prev) => prev.filter((n) => n.id !== id))
-    }
+    // const handleDecline = (id: number) => {
+    //     console.log(`Declined invitation ${id}`)
+    //     setNotifications((prev) => prev.filter((n) => n.id !== id))
+    // }
+
+    const [showSuccess, setShowSuccess] = useState(false);  
+
+    const AcceptInviteMutation = useMutation({
+        mutationFn: apiInvites.acceptInvite,
+        onSuccess: () => {
+            toast.success("✅ Приглашение принято");
+            setShowSuccess(true);
+            setTimeout(() => setShowSuccess(false), 3000); 
+        },
+        onError: () => {
+            toast.error("❌ Не удалось принять приглашение");
+          }
+    })
+
+    const RejectInviteMutation = useMutation({
+        mutationFn: apiInvites.rejectInvite,
+        onSuccess: () => {
+            // setShowSuccess(true);
+            // setTimeout(() => setShowSuccess(false), 3000); 
+        },
+        onError: () => {
+            toast.error("❌ Не удалось отклонить приглашение");
+          }
+    })
 
     function parseDate(dateStr: string) {
-        const date = new Date(dateStr); // автоматически парсит ISO строку
+        const date = new Date(dateStr); 
         const year = date.getUTCFullYear();
-        const month = date.getUTCMonth() + 1; // месяцы от 0 до 11
+        const month = date.getUTCMonth() + 1; 
         const day = date.getUTCDate();
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
@@ -100,7 +126,7 @@ export function Notifications() {
     if (error) {
         return <Card>
             <CardContent className="h-auto md:h-[calc(100%-60px)] overflow-x-auto">
-                Нет текущих мероприятий
+                Нет приглашений
             </CardContent>
         </Card>
     } 
@@ -108,10 +134,12 @@ export function Notifications() {
     if (isPending) {
         return <Card>
         <CardContent className="h-auto md:h-[calc(100%-60px)] overflow-x-auto">
-            Нет текущих мероприятий
+            Нет приглашений
         </CardContent>
         </Card>
     }
+
+    // const [showSuccess, setShowSuccess] = useState(false);
 
     return (
         <Card className="bg-card text-card-foreground border-border h-[450px] flex-1">
@@ -121,16 +149,32 @@ export function Notifications() {
                     Рассылка
                 </CardTitle>
             </CardHeader>
+            {showSuccess && (
+                    <div style={{
+                        position: 'fixed',
+                        top: 20,
+                        right: 20,
+                        background: '#4BB543',
+                        color: 'white',
+                        padding: '12px 20px',
+                        borderRadius: '8px',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                        zIndex: 9999
+                    }}>
+                        ✅ Заявка принята
+                    </div>
+                    )}
             <CardContent className="space-y-4 h-[calc(100%-60px)] overflow-y-auto">
-                {invites?.map((notification) => (
+                {invites?.map((notification, index) => (
                     <div
-                        // key={notification.id}
+                        key={index}
                         className="flex items-center justify-between p-4 bg-muted/50 rounded-lg border border-border"
                     >
                         <div className="flex-1 min-w-0">
                             <p className="text-base text-foreground">
-                                {notification.inviter_id} приглашает вас в команду {notification.team_id}<br></br>
-                                приглашение станет не действительным через {formatTimeDifference(notification.expired_at)}
+                                {notification.inviter.firstname} {notification.inviter.lastname} приглашает вас в команду {notification.team.team_name}<br/>
+                                приглашение станет не действительным через 
+                                <span className="text-muted-foreground ml-2">{formatTimeDifference(notification.expired_at)}</span>
                                 {/* {notification.message} <span className="text-muted-foreground ml-2">{notification.time}</span> */}
                             </p>
                         </div>
@@ -154,7 +198,8 @@ export function Notifications() {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter className="flex flex-col md:flex-row gap-2">
                                         <AlertDialogAction 
-                                        // onClick={() => handleAccept(notification.id)}
+                                        onClick={() => AcceptInviteMutation.mutate(notification.code)}
+                                        disabled={AcceptInviteMutation.isPending}
                                         >
                                             Принять
                                         </AlertDialogAction>
@@ -182,7 +227,8 @@ export function Notifications() {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter className="flex flex-col md:flex-row gap-2">
                                         <AlertDialogAction 
-                                        // onClick={() => handleDecline(notification.id)}
+                                        onClick={() => RejectInviteMutation.mutate(notification.code)}
+                                        disabled={AcceptInviteMutation.isPending}
                                         >
                                             Отклонить
                                         </AlertDialogAction>

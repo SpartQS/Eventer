@@ -48,7 +48,7 @@ export default function MyEventDetailsPage() {
     return (
         <div className="w-full flex flex-col items-center px-2 sm:px-4 py-4 sm:py-8">
             <div className="w-full max-w-xl">
-                <h1 className="text-2xl sm:text-3xl font-bold mb-2">Хакатон</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">Хакатон{eventId}</h1>
                 <div className="flex items-center text-muted-foreground text-sm mb-6 gap-2">
                     <span>3 декабря 2025 - 5 декабря 2025</span>
                 </div>

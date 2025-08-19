@@ -9,7 +9,9 @@ export const ROLE_ACCESS = {
         '/profile',
         '/allevents',
         '/myevents',
-        '/certificates'
+        '/certificates',
+        '/eventdashboard', // del
+        'createevent' // del
     ],
     [ROLES.ADMIN]: [
         '/profile',
@@ -17,7 +19,8 @@ export const ROLE_ACCESS = {
         '/myevents',
         '/certificates',
         '/dashboard',
-        '/create-event',
+        '/createevent',
+        '/eventdashboard',
         '/admin'
     ],
     [ROLES.ORGANAIZER]: [

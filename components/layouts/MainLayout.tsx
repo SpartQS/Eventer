@@ -12,7 +12,7 @@ export default function MainLayout({
     children: React.ReactNode
 }) {
     return (
-        <AuthGuard>
+        // <AuthGuard>
             <SidebarProvider>
                 <AppSidebar />
                 <SidebarInset>
@@ -30,6 +30,6 @@ export default function MainLayout({
                     </main>
                 </SidebarInset>
             </SidebarProvider>
-        </AuthGuard>
+        // </AuthGuard>
     )
 } 
