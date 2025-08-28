@@ -47,8 +47,15 @@ export const apiEventTeams = {
   getEventTeam: async (event_id: number): Promise<MyTeamWithMembers> => {
     return (await restAxios.get(`api/events/${event_id}/event-teams/my`)).data
   },
-  createTeam: async (event_id: number, name: string) => {
-    return (await restAxios.post(`/api/events/${event_id}/event-teams`, {name})).data;
+  createTeam: async (event_id: number,  file: File, name: string) => {
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("file", file);
+    return (await restAxios.post(`/api/events/${event_id}/event-teams`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })).data;
   },
   joinTeam: async (event_id: number, invite_token: string) => {
     return (await restAxios.post(`/api/events/${event_id}/event-teams/join/${invite_token}`)).data;

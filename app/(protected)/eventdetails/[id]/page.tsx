@@ -30,6 +30,7 @@ export default function EventDetailsPage() {
     const [createTeamName, setCreateTeamName] = useState('');
     const [token, setToken] = useState<string | null>(null);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [agree, setAgree] = useState<File | null>(null);
     const searchParams = useSearchParams();
 
     useEffect(() => {
@@ -48,8 +49,8 @@ export default function EventDetailsPage() {
         }
       }, []);
 
-    const CreateTeamMutation = useMutation<JoinTeamResponse, Error, {event_id: number; name: string}>({
-        mutationFn: ({ event_id, name }) => apiEventTeams.createTeam(event_id, name),
+    const CreateTeamMutation = useMutation<JoinTeamResponse, Error, {event_id: number; agree: File, name: string}>({
+        mutationFn: ({ event_id, agree, name }) => apiEventTeams.createTeam(event_id, agree, name),
         onSuccess: () => {
             setShowSuccess(true);
             setTimeout(() => setShowSuccess(false), 3000);
@@ -74,8 +75,8 @@ export default function EventDetailsPage() {
         if (token != null) {
             JoinTeamMutation.mutate({event_id: Number(eventId), invite_token: token});
         } else {
-            if (createTeamName != '') {
-                CreateTeamMutation.mutate({event_id: Number(eventId), name: createTeamName})
+            if (createTeamName !== "" && agree ) {
+                CreateTeamMutation.mutate({event_id: Number(eventId), agree: agree, name: createTeamName})
             }
         }
       };
@@ -269,6 +270,7 @@ export default function EventDetailsPage() {
                                     {/* <p className="text-lg font-bold text-white">{timeLeft}</p> */}
                                 </div>
                                 <Button size="lg" variant="ghost" className="w-full bg-muted text-white hover:bg-muted/80 rounded-lg"><Share2Icon className="w-5 h-5 mr-2" /> Поделиться</Button>
+                                
                                 {/* Модалка */}
                                 <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                                         {/* Create team */}
@@ -306,19 +308,24 @@ export default function EventDetailsPage() {
                                             <div className="text-xl font-bold mb-4">Вас пригласили участвовать в ивенте в составе команды {team?.team?.name}</div>
                                         )}
                                         {/* Согласие */}
-                                        {/* <div className="space-y-2 flex justify-end">
-                                            <label>Согласие</label>
-                                            <input className='bg-black' type='file'></input> */}
-                                            {/* <Label >Согласие</Label>
+                                        <div className="space-y-2 flex justify-end">
+                                            <Label >Согласие</Label>
                                             <Input
-                                                name="team_name"
+                                                name="agree"
                                                 type="file"
                                                 // value={teamData.team_name}
-                                                // onChange={handleChange}
+                                                onChange={(e) => {
+                                                    if (e.target.files && e.target.files.length > 0) {
+                                                      setAgree(e.target.files[0]);
+                                                    }
+                                                  }}
                                                 placeholder="Загрузите согласие"
                                                 required
-                                            /> */}
-                                        {/* </div> */}
+                                            />
+                                            {agree && (
+                                            <p className="text-sm text-gray-500 mt-2">Вы выбрали: {agree.name}</p>
+                                            )}
+                                        </div>
                                         <Button onClick={handleClick}>
                                             подать заявку
                                         </Button>

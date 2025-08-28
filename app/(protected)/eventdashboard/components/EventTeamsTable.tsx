@@ -82,12 +82,6 @@ export function EventTeamsTable({
 
   return (
     <Card className="p-8">
-      <CardHeader className="pb-4">
-        <CardTitle className="text-2xl font-bold">Команды ивента "Хакатон 2024"</CardTitle>
-        <CardDescription className="text-lg">
-          Найдено {filteredTeams.length} команд из {mockTeams.length} зарегистрированных
-        </CardDescription>
-      </CardHeader>
       <CardContent className="pt-0">
         <div className="rounded-xl border">
           <Table>
