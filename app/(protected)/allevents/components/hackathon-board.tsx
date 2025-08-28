@@ -399,7 +399,7 @@ export default function HackathonBoard() {
 
             {/* Main content */}
             <div className="flex-1 p-2 sm:p-4 md:p-6">
-                <div className="w-full md:w-[1100px] mx-auto">
+                <div className="w-full max-w-[1100px] mx-auto">
                     <div className="space-y-4 md:space-y-6">
                         {events?.map((event) => (
                         // {filteredHackathons.map((hackathon) => (
@@ -408,6 +408,7 @@ export default function HackathonBoard() {
                                     {/* Event poster */}
                                     <div className="w-full md:w-80 h-48 md:h-auto flex-shrink-0 relative">
                                         <img
+                                            // src={event.image_url}
                                             src={"https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"}
                                             alt={"https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"}
                                             className="absolute inset-0 w-full h-full object-cover"

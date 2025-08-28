@@ -51,7 +51,7 @@ const data = {
     },
     {
       name: "Дашборд",
-      url: "/eventdashboard/1",
+      url: "/eventdashboard",
       icon: ClipboardList,
     },
     {
