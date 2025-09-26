@@ -309,10 +309,10 @@ export default function EventTeamsPage() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [searchQuery, setSearchQuery] = useState("")
 
-  const { data: eventstats, isPending, error} = useQuery({
+  const { data: eventstats, isPending, error } = useQuery({
     queryKey: ['EventsStat'],
     queryFn: () => apiEvents.getEventStats(Number(eventId)),
-})
+  })
 
   const getStatusBadge = (status) => {
     const statusConfig = {
@@ -377,43 +377,43 @@ export default function EventTeamsPage() {
   }
 
   return (
-      <div className="min-h-screen bg-background text-foreground p-10">
-        <div className="max-w-[1600px] mx-auto flex flex-col gap-12">
-          <div className="flex flex-col gap-8">
-            <h1 className="text-4xl font-extrabold">Команды ивента</h1>
+    <div className="min-h-screen bg-background text-foreground p-4 sm:p-6">
+      <div className="max-w-[1200px] mx-auto flex flex-col gap-10">
+        <div className="flex flex-col gap-8">
+          <h1 className="text-4xl font-extrabold">Команды ивента</h1>
+        </div>
+        <EventNavigation />
+        {/* Main Content */}
+        <div className="space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
+            <EventTeamStatsCard title='Всего команд' value={eventstats?.total_teams ?? 0} subtitle='в ивенте' icon={Users} isLoading={isPending} />
+            <EventTeamStatsCard title='Одобрено' value={eventstats?.teams?.approved ?? 0} subtitle='готовы к участию' icon={CircleCheckBig} color='text-green-500' isLoading={isPending} />
+            <EventTeamStatsCard title='Ожидает' value={eventstats?.teams?.pending ?? 0} subtitle='требует решения' icon={CircleAlert} color='text-orange-500' isLoading={isPending} />
+            <EventTeamStatsCard title='Отклонено' value={eventstats?.teams?.rejected ?? 0} subtitle='не прошли отбор' icon={XCircle} color='text-red-500' isLoading={isPending} />
+            <EventTeamStatsCard title='Участников' value={eventstats?.total_participants ?? 0} subtitle='всего человек' icon={Users} color='text-blue-500' isLoading={isPending} />
           </div>
-          <EventNavigation />
-          {/* Main Content */}
-          <div className="space-y-10">
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-8">
-                <EventTeamStatsCard title='Всего команд' value={eventstats?.total_teams ?? 0} subtitle='в ивенте' icon={Users} isLoading={isPending}/>
-                <EventTeamStatsCard title='Одобрено' value={eventstats?.teams?.approved ?? 0} subtitle='готовы к участию' icon={CircleCheckBig} color='text-green-500' isLoading={isPending} />
-                <EventTeamStatsCard title='Ожидает' value={eventstats?.teams?.pending ?? 0} subtitle='требует решения' icon={CircleAlert} color='text-orange-500' isLoading={isPending} />
-                <EventTeamStatsCard title='Отклонено' value={eventstats?.teams?.rejected ?? 0} subtitle='не прошли отбор' icon={XCircle} color='text-red-500' isLoading={isPending} />
-                <EventTeamStatsCard title='Участников' value={eventstats?.total_participants ?? 0} subtitle='всего человек' icon={Users} color='text-blue-500' isLoading={isPending} />
-              </div>
-            {/* <EventTeamFilters
+          {/* <EventTeamFilters
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               statusFilter={statusFilter}
               setStatusFilter={setStatusFilter}
             /> */}
-            <EventTeamsTable
-              filteredTeams={filteredTeams}
-              selectedTeam={selectedTeam}
-              setSelectedTeam={setSelectedTeam}
-              isDetailModalOpen={isDetailModalOpen}
-              setIsDetailModalOpen={setIsDetailModalOpen}
-              getStatusBadge={getStatusBadge}
-              getParentalConsentBadge={getParentalConsentBadge}
-              handleTeamAction={handleTeamAction}
-              handleParentalConsentAction={handleParentalConsentAction}
-              handleMassParentalConsent={handleMassParentalConsent}
-              openTeamDetails={openTeamDetails}
-              mockTeams={mockTeams}
-            />
-          </div>
+          <EventTeamsTable
+            filteredTeams={filteredTeams}
+            selectedTeam={selectedTeam}
+            setSelectedTeam={setSelectedTeam}
+            isDetailModalOpen={isDetailModalOpen}
+            setIsDetailModalOpen={setIsDetailModalOpen}
+            getStatusBadge={getStatusBadge}
+            getParentalConsentBadge={getParentalConsentBadge}
+            handleTeamAction={handleTeamAction}
+            handleParentalConsentAction={handleParentalConsentAction}
+            handleMassParentalConsent={handleMassParentalConsent}
+            openTeamDetails={openTeamDetails}
+            mockTeams={mockTeams}
+          />
         </div>
       </div>
+    </div>
   )
 }

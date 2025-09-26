@@ -23,7 +23,7 @@ export default function MyEvents() {
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
         const seconds = date.getUTCSeconds();
-        
+
         return `${year}-${month}-${day}`
     }
 
@@ -36,7 +36,7 @@ export default function MyEvents() {
         // format: '',
         event_status: 'active',
         // name: '',
-      }
+    }
 
     const [filters, setFilters] = useState({
         page: 1,
@@ -117,35 +117,35 @@ export default function MyEvents() {
                             <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
                                 {/* Category */}
                                 <div className="space-y-2">
-                                <Select
-                                    value={tempFilters.category}
-                                    onValueChange={(value) => setTempFilters((prev) => ({  ...prev, category: value, page: 1, }))}
-                                >
-                                    <SelectTrigger id="category-select">
-                                        <SelectValue placeholder="Все категории" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="1">Искусство</SelectItem>
-                                        <SelectItem value="2">Технологии</SelectItem>
-                                        <SelectItem value="3">Образование</SelectItem>
-                                        <SelectItem value="4">Киберспорт</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                                    <Select
+                                        value={tempFilters.category}
+                                        onValueChange={(value) => setTempFilters((prev) => ({ ...prev, category: value, page: 1, }))}
+                                    >
+                                        <SelectTrigger id="category-select">
+                                            <SelectValue placeholder="Все категории" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="1">Искусство</SelectItem>
+                                            <SelectItem value="2">Технологии</SelectItem>
+                                            <SelectItem value="3">Образование</SelectItem>
+                                            <SelectItem value="4">Киберспорт</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
-                                {/* Event Status */}        
+                                {/* Event Status */}
                                 <div className="space-y-2">
                                     <Select
-                                    value={tempFilters.event_status}
-                                    onValueChange={(value) => setTempFilters((prev) => ({ ...prev, event_status: value, page: 1 }))}
+                                        value={tempFilters.event_status}
+                                        onValueChange={(value) => setTempFilters((prev) => ({ ...prev, event_status: value, page: 1 }))}
                                     >
-                                    <SelectTrigger id="event_status">
-                                        <SelectValue placeholder="Выберите статус" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="active">Активные</SelectItem>
-                                        <SelectItem value="waiting">Предстоящие</SelectItem>
-                                        <SelectItem value="closed">Завершённые</SelectItem>
-                                    </SelectContent>
+                                        <SelectTrigger id="event_status">
+                                            <SelectValue placeholder="Выберите статус" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="active">Активные</SelectItem>
+                                            <SelectItem value="waiting">Предстоящие</SelectItem>
+                                            <SelectItem value="closed">Завершённые</SelectItem>
+                                        </SelectContent>
                                     </Select>
                                 </div>
 
@@ -153,57 +153,57 @@ export default function MyEvents() {
                                 <div className="space-y-2">
                                     <div className="relative">
                                         <Input
-                                        id="date"
-                                        type="text"
-                                        placeholder="ДД.ММ.ГГГГ"
-                                        value={tempFilters.date}
-                                        onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value, page: 1 }))}
+                                            id="date"
+                                            type="text"
+                                            placeholder="ДД.ММ.ГГГГ"
+                                            value={tempFilters.date}
+                                            onChange={(e) => setTempFilters((prev) => ({ ...prev, date: e.target.value, page: 1 }))}
                                         />
                                         <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
-                                <Button
-                                    onClick={() => setFilters({ ...tempFilters, page: 1 })}
-                                    className="flex-1"
-                                >
-                                    Применить
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => {
-                                    setFilters(initialFilters)
-                                    setTempFilters(initialFilters)
-                                    }}
-                                    className="flex-1"
-                                >
-                                    Очистить
-                                </Button>
-                            </div>
+                                    <Button
+                                        onClick={() => setFilters({ ...tempFilters, page: 1 })}
+                                        className="flex-1"
+                                    >
+                                        Применить
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => {
+                                            setFilters(initialFilters)
+                                            setTempFilters(initialFilters)
+                                        }}
+                                        className="flex-1"
+                                    >
+                                        Очистить
+                                    </Button>
+                                </div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                             {events.map((event) => (
-                                <Card key={event.id} className="bg-background border border-border rounded-xl shadow-lg flex flex-col min-h-[260px] h-full p-5">
+                                <Card key={event.id} className="bg-card text-card-foreground border border-border rounded-xl shadow-lg flex flex-col min-h-[260px] h-full p-5">
                                     <div className="flex flex-col flex-1">
                                         <div className="flex items-center justify-between mb-2">
                                             <div className="flex items-center gap-4 min-w-[48px]">
                                                 <span className="flex items-center justify-center w-10 h-10">
                                                     {getEventTypeIcon(event.category.name)}
                                                 </span>
-                                                <CardTitle className="text-base md:text-lg font-bold break-words line-clamp-2 mr-2 text-white max-w-[180px]">{event.event_name}</CardTitle>
+                                                <CardTitle className="text-base md:text-lg font-bold break-words line-clamp-2 mr-2 max-w-[180px]">{event.event_name}</CardTitle>
                                             </div>
                                             {getStatusBadge(event.event_status)}
                                         </div>
                                         <div className="text-xs text-muted-foreground mb-2">С {parseDate(event.start_date)} по {parseDate(event.end_date)}</div>
-                                        <div className="text-xs sm:text-sm text-gray-300 break-words line-clamp-3 mb-3">{event.description}</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground break-words line-clamp-3 mb-3">{event.description}</div>
                                         <div className="flex-1" />
                                     </div>
                                     <CardFooter className="p-0 mt-1">
                                         <Button
-                                            variant="outline"
-                                            className="w-full border border-gray-500 bg-transparent text-white hover:bg-gray-800 hover:text-white text-sm rounded-lg font-bold"
+                                            variant="default"
+                                            className="w-full text-sm font-semibold"
                                             onClick={() => router.push(`/myevents/event/${event.id}`)}
                                         >
                                             Подробнее
